@@ -8,6 +8,10 @@ import {
 } from 'lucide-react';
 
 // --- IMPORTAZIONE LOGHI ---
+
+// --- IMPORTAZIONE LOGO PRINCIPALE ---
+import mainLogo from './assets/img/s1.png';
+
 import cifaLogo from './assets/img/loghi aggiunti/cifa service first.png';
 import energreenLogo from './assets/img/loghi aggiunti/energreen service first.png';
 import geetitLogo from './assets/img/loghi aggiunti/geetit-service first.png';
@@ -240,7 +244,7 @@ function App() {
       >
         <div className="max-w-7xl mx-auto flex justify-between items-center">
           <div className="w-24 md:w-32">
-            <img src="./src/assets/img/s1.png" alt="Service First Logo" className="w-full h-auto object-contain" />
+            <img src={mainLogo} alt="Service First Logo" className="w-full h-auto object-contain" />
           </div>
           <motion.a 
             whileHover={{ scale: 1.05 }}
