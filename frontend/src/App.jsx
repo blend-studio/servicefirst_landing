@@ -8,23 +8,23 @@ import {
 } from 'lucide-react';
 
 // --- IMPORTAZIONE LOGHI ---
-import cifaLogo from '/assets/img/loghi aggiunti/cifa service first.png';
-import energreenLogo from '/assets/img/loghi aggiunti/energreen service first.png';
-import geetitLogo from '/assets/img/loghi aggiunti/geetit-service first.png';
-import fiveLogo from '/assets/img/loghi aggiunti/LOGO_FIVE_1.png';
-import zoomlionLogo from '/assets/img/loghi aggiunti/zoomlion-servicefirst.png';
+import cifaLogo from './assets/img/loghi aggiunti/cifa service first.png';
+import energreenLogo from './assets/img/loghi aggiunti/energreen service first.png';
+import geetitLogo from './assets/img/loghi aggiunti/geetit-service first.png';
+import fiveLogo from './assets/img/loghi aggiunti/LOGO_FIVE_1.png';
+import zoomlionLogo from './assets/img/loghi aggiunti/zoomlion-servicefirst.png';
 
 // --- IMPORTAZIONE IMMAGINI CATALOGO ---
-import iaImage from '/assets/img/IA-Service-First.png';
-import generatorImage from '/assets/img/EDITOR-catalogo-interattivo.webp';
-import editorImage from '/assets/img/CATALOGO-SF-TAB-EDITOR.webp';
-import multilingueImage from '/assets/img/CATALOGO-SF-TAB-MULTILINGUA.webp';
+import iaImage from './assets/img/IA-Service-First.png';
+import generatorImage from './assets/img/EDITOR-catalogo-interattivo.webp';
+import editorImage from './assets/img/CATALOGO-SF-TAB-EDITOR.webp';
+import multilingueImage from './assets/img/CATALOGO-SF-TAB-MULTILINGUA.webp';
 
 // --- IMPORTAZIONE IMMAGINI VENDI CON IL CATALOGO ---
-import carrelloImage from '/assets/img/CATALOGO-SF-CARRELLO-NUOVO.webp';
-import preventiviImage from '/assets/img/CATALOGO-SFTAB-PREVENTIVI.webp';
-import pagamentiImage from '/assets/img/CATALOGO-SF-TAB-PAGAMENTI.webp';
-import ordiniImage from '/assets/img/CATALOGO-SF-TAB-ORDINI.webp';
+import carrelloImage from './assets/img/CATALOGO-SF-CARRELLO-NUOVO.webp';
+import preventiviImage from './assets/img/CATALOGO-SFTAB-PREVENTIVI.webp';
+import pagamentiImage from './assets/img/CATALOGO-SF-TAB-PAGAMENTI.webp';
+import ordiniImage from './assets/img/CATALOGO-SF-TAB-ORDINI.webp';
 
 // --- VARIANTI ANIMAZIONI ---
 const fadeInUp = {
@@ -240,7 +240,7 @@ function App() {
       >
         <div className="max-w-7xl mx-auto flex justify-between items-center">
           <div className="w-24 md:w-32">
-            <img src="/src/assets/img/s1.png" alt="Service First Logo" className="w-full h-auto object-contain" />
+            <img src="./src/assets/img/s1.png" alt="Service First Logo" className="w-full h-auto object-contain" />
           </div>
           <motion.a 
             whileHover={{ scale: 1.05 }}
@@ -959,7 +959,7 @@ function App() {
       <footer className="bg-white border-t border-gray-100 py-8 md:py-12">
         <div className="max-w-7xl mx-auto px-4 md:px-6 flex flex-col md:flex-row justify-between items-center gap-4 md:gap-6">
           <motion.div whileHover={{ scale: 1.1, filter: "grayscale(0%)", opacity: 1 }} className="w-20 md:w-24 opacity-80 grayscale transition cursor-pointer">
-             <img src="/src/assets/img/s1.png" alt="Service First" />
+             <img src="./src/assets/img/s1.png" alt="Service First" />
           </motion.div>
           <div className="flex gap-6 text-gray-400">
              <motion.div whileHover={{ color: "#0d9488", rotate: 15 }}><Globe size={20} className="cursor-pointer"/></motion.div>
