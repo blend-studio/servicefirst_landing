@@ -1,0 +1,16 @@
+@import url('https://fonts.googleapis.com/css2?family=Montserrat:wght@300;400;600;700&display=swap');
+
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+/* FORZA IL TEMA CHIARO */
+:root {
+  color-scheme: light;
+}
+
+body {
+  @apply font-sans text-sf-dark bg-white;
+  background-color: #ffffff !important; /* Forza assoluta sfondo bianco */
+  color: #1A1A1A !important; /* Forza assoluta testo scuro */
+}
