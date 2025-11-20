@@ -101,7 +101,7 @@ function App() {
     e.preventDefault();
     setStatus('loading');
     try {
-      const response = await fetch('http://localhost/servicefirst_landing/backend/public/index.php?action=register_demo', {
+      const response = await fetch('http://localhost:8080/api/contact.php', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify(formData),

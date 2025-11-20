@@ -1,38 +1,42 @@
 <?php
+// FILE: backend/controllers/ContactController.php
 
-// Carica l'autoload di Composer per Dotenv e PHPMailer
-require_once '../vendor/autoload.php';
+// Usa __DIR__ per risalire correttamente alla cartella vendor
+require_once __DIR__ . '/../vendor/autoload.php';
 
-// Carica le variabili d'ambiente
 $dotenv = Dotenv\Dotenv::createImmutable(__DIR__ . '/..');
 $dotenv->load();
 
-include_once '../config/database.php';
-include_once '../models/Contact.php';
-include_once '../services/MailService.php';
+// Usa require_once con percorsi assoluti per evitare errori di inclusione
+require_once __DIR__ . '/../config/database.php';
+require_once __DIR__ . '/../models/Contact.php';
+require_once __DIR__ . '/../services/MailService.php';
 
 class ContactController {
     public function register() {
-        // Headers CORS
-        header("Access-Control-Allow-Origin: *");
-        header("Content-Type: application/json; charset=UTF-8");
-        header("Access-Control-Allow-Methods: POST");
-        header("Access-Control-Allow-Headers: Content-Type, Access-Control-Allow-Headers, Authorization, X-Requested-With");
+        
+        // --- RIMOSSI TUTTI GLI HEADER CORS DA QUI (Gestritti in api/contact.php) ---
 
-        // Gestione preflight request
-        if ($_SERVER['REQUEST_METHOD'] == 'OPTIONS') {
-            http_response_code(200);
-            exit();
-        }
+        // 1. Logging Input
+        $input = file_get_contents("php://input");
+        error_log("API Contact chiamata. Payload: " . $input);
 
         $database = new Database();
         $db = $database->getConnection();
+
+        if (!$db) {
+            http_response_code(500);
+            echo json_encode(["success" => false, "message" => "Database connection failed"]);
+            return;
+        }
+
         $contact = new Contact($db);
         $mailService = new MailService();
 
-        $data = json_decode(file_get_contents("php://input"));
+        $data = json_decode($input);
 
-        if(!empty($data->nome) && !empty($data->email)) {
+        // Verifica che i dati esistano prima di accedervi
+        if(isset($data->nome) && isset($data->email)) {
             $contact->nome = $data->nome;
             $contact->email = $data->email;
             $contact->azienda = $data->azienda ?? '';
@@ -41,22 +45,22 @@ class ContactController {
             $contact->messaggio = $data->messaggio ?? '';
 
             if($contact->create()) {
-                // Invio Email di Conferma
-                $mailSent = $mailService->sendConfirmation($contact->email, $contact->nome);
-                
+                // ... resto della logica invio mail ...
+                $userMailSent = $mailService->sendConfirmation($contact->email, $contact->nome);
+                $adminMailSent = $mailService->sendAdminNotification($contact);
+
                 http_response_code(201);
-                echo json_encode(array(
+                echo json_encode([
                     "success" => true, 
-                    "message" => "Contatto registrato.",
-                    "mail_sent" => $mailSent
-                ));
+                    "message" => "Contatto registrato."
+                ]);
             } else {
                 http_response_code(503);
-                echo json_encode(array("success" => false, "message" => "Impossibile registrare il contatto nel DB."));
+                echo json_encode(["success" => false, "message" => "Errore salvataggio DB."]);
             }
         } else {
             http_response_code(400);
-            echo json_encode(array("success" => false, "message" => "Dati incompleti."));
+            echo json_encode(["success" => false, "message" => "Dati incompleti."]);
         }
     }
 }

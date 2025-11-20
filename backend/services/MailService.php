@@ -11,11 +11,14 @@ class MailService {
         $mail->isSMTP();
         $mail->Host       = $_ENV['SMTP_HOST'];
         $mail->SMTPAuth   = true;
-        $mail->Username   = $_ENV['SMTP_USER'];
+        $mail->Username   = $_ENV['SMTP_USER']; // Utente per il login SMTP
         $mail->Password   = $_ENV['SMTP_PASS'];
         $mail->SMTPSecure = $_ENV['SMTP_SECURE'];
         $mail->Port       = $_ENV['SMTP_PORT'];
-        $mail->setFrom($_ENV['SMTP_USER'], $_ENV['SMTP_FROM_NAME']);
+        
+        // CORREZIONE: Usa SMTP_FROM per il mittente visibile (info@blendstudio.it)
+        $mail->setFrom($_ENV['SMTP_FROM'], $_ENV['SMTP_FROM_NAME']);
+        
         $mail->isHTML(true);
         $mail->CharSet = 'UTF-8';
         return $mail;
@@ -39,7 +42,7 @@ class MailService {
         }
     }
 
-  // 2. EMAIL ALL'ADMIN (Notifica nuovo lead)
+    // 2. EMAIL ALL'ADMIN (Notifica nuovo lead)
     public function sendAdminNotification($contactData) {
         try {
             $mail = $this->getMailer();
@@ -61,7 +64,7 @@ class MailService {
                 }
             }
 
-            // Opzionale: Reply-To impostato sulla mail del lead per rispondere subito
+            // Reply-To impostato sulla mail del lead per rispondere subito cliccando "Rispondi"
             $mail->addReplyTo($contactData->email, $contactData->nome);
 
             $mail->Subject = '🔔 Nuovo Lead: ' . $contactData->azienda . ' - ' . $contactData->nome;
