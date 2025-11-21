@@ -67,7 +67,7 @@ class MailService {
             // Reply-To impostato sulla mail del lead per rispondere subito cliccando "Rispondi"
             $mail->addReplyTo($contactData->email, $contactData->nome);
 
-            $mail->Subject = '🔔 Nuovo Lead: ' . $contactData->azienda . ' - ' . $contactData->nome;
+            $mail->Subject = ' Nuovo Lead: ' . $contactData->azienda . ' - ' . $contactData->nome;
             $mail->Body    = $this->getAdminHtmlTemplate($contactData);
             $mail->AltBody = "Nuovo lead ricevuto da {$contactData->nome} ({$contactData->azienda}).";
 
@@ -95,7 +95,7 @@ class MailService {
         </head>
         <body>
             <div class="container">
-                <div class="header"><h1>Richiesta Ricevuta! 🚀</h1></div>
+                <div class="header"><h1>Richiesta Ricevuta!</h1></div>
                 <div class="content">
                     <h2>Ciao ' . htmlspecialchars($name) . ',</h2>
                     <p>Grazie per il tuo interesse in <strong>ServiceFirst</strong>.</p>
@@ -124,7 +124,7 @@ class MailService {
         </head>
         <body>
             <div class="card">
-                <h2>🔔 Nuovo Lead dal Sito</h2>
+                <h2> Nuovo Lead dal Sito</h2>
                 <p>È stata ricevuta una nuova richiesta di demo.</p>
                 <table>
                     <tr><th>Nome</th><td>' . htmlspecialchars($data->nome) . '</td></tr>

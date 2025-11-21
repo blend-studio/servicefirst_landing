@@ -276,9 +276,7 @@ function App() {
             animate="visible"
             className="text-center md:text-left"
           >
-            <motion.div variants={fadeInUp} className="inline-block bg-sf-primary/10 text-sf-primary px-3 py-1 md:px-4 md:py-1 rounded-full text-xs md:text-sm font-bold mb-4 md:mb-6 border border-sf-primary/20">
-              🚀 LA RIVOLUZIONE DEL POST-VENDITA
-            </motion.div>
+           
             <motion.h1 variants={fadeInUp} className="text-4xl md:text-5xl lg:text-6xl font-extrabold text-sf-dark mb-4 md:mb-6 leading-tight">
               Il Tuo Catalogo Ricambi <br/>
               <span className="text-sf-primary">Potenziato dall'AI</span>
