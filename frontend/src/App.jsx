@@ -318,28 +318,18 @@ function App() {
               transition={{ duration: 6, repeat: Infinity, ease: "easeInOut" }}
               className="relative z-10 bg-white rounded-2xl p-2 shadow-2xl border border-gray-100"
             >
-               <div className="bg-gray-100 rounded-xl overflow-hidden h-64 md:h-80 lg:h-96 flex flex-col items-center justify-center text-center p-6 md:p-8 relative group">
-                 <div className="absolute inset-0 bg-gradient-to-tr from-sf-light to-transparent opacity-50 transition group-hover:opacity-70"></div>
-                 <div className="relative z-10">
-                    <motion.div whileHover={{ rotate: 360, scale: 1.2 }} transition={{ duration: 0.8 }}>
-                      <Search size={48} className="text-sf-primary mb-3 md:mb-4 mx-auto md:w-16 md:h-16" />
-                    </motion.div>
-                    <h3 className="text-2xl md:text-3xl font-bold text-sf-dark mb-2">Smart Catalog</h3>
-                    <p className="text-gray-500 text-base md:text-lg">Click-to-Order Technology</p>
-                 </div>
-                 <motion.div 
-                   initial={{ y: 20, opacity: 0 }}
-                   animate={{ y: 0, opacity: 1 }}
-                   transition={{ delay: 1 }}
-                   className="absolute bottom-4 left-4 right-4 bg-white/90 backdrop-blur p-3 rounded-lg shadow-sm flex items-center gap-3 text-left border border-gray-100"
-                 >
-                    <div className="w-10 h-10 bg-green-100 rounded-full flex items-center justify-center text-green-600"><CheckCircle size={18} /></div>
-                    <div>
-                        <div className="text-xs text-gray-400 font-bold uppercase">Status Ordine</div>
-                        <div className="font-bold text-sm text-sf-dark">Confermato via App</div>
-                    </div>
-                 </motion.div>
-               </div>
+              <div className="bg-black rounded-xl overflow-hidden w-full h-full shadow-2xl border border-gray-200 relative">
+                {/* Container per mantenere l'aspect ratio (ho impostato 56.25% ovvero 16:9 standard, se il video è 4:3 usa 75%) */}
+                <div style={{ padding: '56.25% 0 0 0', position: 'relative' }}>
+                  <iframe 
+                    src="https://player.vimeo.com/video/1139982611?badge=0&autopause=0&player_id=0&app_id=58479&background=1" 
+                    frameBorder="0" 
+                    allow="autoplay; fullscreen; picture-in-picture; clipboard-write; encrypted-media; web-share" 
+                    style={{ position: 'absolute', top: 0, left: 0, width: '100%', height: '100%' }} 
+                    title="Video Catalogo_ServiceFirst_Catalog_subENG"
+                  ></iframe>
+                </div>
+              </div>
             </motion.div>
           </motion.div>
         </div>
