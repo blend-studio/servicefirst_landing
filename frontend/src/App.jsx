@@ -6,8 +6,9 @@ import {
   ShoppingCart, MousePointer, BarChart3, Users, Sparkles, 
   TrendingUp, X, Check, Building2, Crown, Briefcase, 
   Phone, User, MessageSquare, Lock, ChevronLeft, ChevronRight,
-  Video, Package, Languages, Wrench, Boxes, Pencil, // AGGIUNTA ICONA PENCIL
-  Bot, FileUp, ScanLine, Wand2, CalendarDays, Truck, ClipboardList, LifeBuoy
+  Video, Package, Languages, Wrench, Boxes, Pencil,
+  Bot, FileUp, ScanLine, Wand2, CalendarDays, Truck, ClipboardList, LifeBuoy,
+  FileText, Bell, Paperclip // NUOVE ICONE AGGIUNTE
 } from 'lucide-react';
 
 // --- IMPORTAZIONE LOGHI ---
@@ -192,20 +193,25 @@ function App() {
     }
   ];
 
-  // --- FEATURES (12 Card totali inclusa Editor) ---
+  // --- FEATURES (16 Card totali) ---
   const features = [
     { id: 1, icon: <Zap size={32} />, title: "Creazione con AI", desc: "Genera cataloghi multilingua in un click grazie all'Intelligenza Artificiale.", details: "Il nostro motore AI analizza i tuoi PDF tecnici, riconosce i codici e crea automaticamente le associazioni con la distinta base. Risparmia fino al 90% del tempo di data-entry manuale.", benefits: ["Riconoscimento automatico", "Importazione massiva", "Zero errori umani"] },
-    { id: 2, icon: <MousePointer size={32} />, title: "Navigazione Interattiva", desc: "Esplosi 2D/3D interattivi per identificare i ricambi senza errori.", details: "Offri ai tuoi clienti un'esperienza visiva superiore. Cliccando sul componente nel disegno, questo viene evidenziato nella distinta.", benefits: ["Zoom profondo", "Evidenziazione bidirezionale", "Mobile Touch"] },
-    { id: 3, icon: <ShoppingCart size={32} />, title: "E-Commerce B2B", desc: "Trasforma il catalogo in un portale di vendita attivo 24/7.", details: "Gestisci listini personalizzati per cliente, sconti per quantità, diverse valute e metodi di pagamento sicuri.", benefits: ["Listini personalizzati", "Carrello persistente", "Pagamenti sicuri"] },
-    { id: 4, icon: <ShieldCheck size={32} />, title: "Zero Errori", desc: "Identificazione univoca per matricola: ordini sempre corretti.", details: "Filtra il catalogo inserendo il numero di matricola. Il cliente vedrà SOLO i ricambi compatibili.", benefits: ["Filtro Matricola", "Riduzione resi", "Storico modifiche"] },
-    { id: 5, icon: <Smartphone size={32} />, title: "App Mobile", desc: "Accedi al catalogo e ordina direttamente dal campo, anche offline.", details: "App nativa iOS/Android che permette ai tecnici di lavorare anche senza connessione internet.", benefits: ["Funzionamento Offline", "Scansione QR Code", "Notifiche Push"] },
-    { id: 6, icon: <Database size={32} />, title: "Integrazione ERP", desc: "Perfettamente integrato con il tuo gestionale aziendale.", details: "Sincronizzazione bidirezionale con SAP, Microsoft Dynamics, Zucchetti per prezzi e giacenze.", benefits: ["API RESTful", "Connettori pronti", "Sync real-time"] },
+    { id: 2, icon: <MousePointer size={32} />, title: "Navigazione Interattiva", desc: "Esplosi 2D/3D interattivi per identificare i ricambi senza errori.", details: "Offri ai tuoi clienti un'esperienza visiva superiore. Cliccando sul componente nel disegno, questo viene evidenziato nella distinta e viceversa. Supportiamo SVG, PDF vettoriali e modelli 3D.", benefits: ["Zoom profondo", "Evidenziazione bidirezionale", "Mobile Touch"] },
+    { id: 3, icon: <ShoppingCart size={32} />, title: "E-Commerce B2B", desc: "Trasforma il catalogo in un portale di vendita attivo 24/7.", details: "Gestisci listini personalizzati per cliente, sconti per quantità, diverse valute e metodi di pagamento sicuri direttamente nel portale ricambi.", benefits: ["Listini personalizzati", "Carrello persistente", "Gateway pagamenti integrati"] },
+    { id: 4, icon: <ShieldCheck size={32} />, title: "Zero Errori", desc: "Identificazione univoca per matricola: ordini sempre corretti.", details: "Filtra il catalogo inserendo il numero di matricola della macchina. Il cliente vedrà SOLO i ricambi compatibili con quella specifica versione, eliminando alla radice i resi per errato ordine.", benefits: ["Filtro Matricola", "Riduzione resi", "Storico modifiche"] },
+    { id: 5, icon: <Smartphone size={32} />, title: "App Mobile", desc: "Accedi al catalogo e ordina direttamente dal campo, anche offline.", details: "La nostra Progressive Web App (PWA) e le app native iOS/Android permettono ai tecnici di lavorare in cantiere anche senza connessione internet. Sincronizzazione automatica appena la rete torna disponibile.", benefits: ["Funzionamento Offline", "Scansione QR Code", "Notifiche Push"] },
+    { id: 6, icon: <Database size={32} />, title: "Integrazione ERP", desc: "Perfettamente integrato con il tuo gestionale aziendale.", details: "ServiceFirst dialoga con il tuo ERP (SAP, Microsoft Dynamics, Zucchetti, ecc.) per sincronizzare giacenze, prezzi e ordini in tempo reale. Niente più doppio inserimento dati.", benefits: ["API RESTful", "Connettori pronti", "Sync real-time"] },
     { id: 7, icon: <Video size={32} />, title: "Contenuti Multimediali", desc: "Arricchisci il catalogo con video, foto e manuali tecnici.", details: "Collega video tutorial e schede tecniche direttamente al codice del ricambio.", benefits: ["Video Tutorial", "Schede PDF", "Foto dettagliate"] },
     { id: 8, icon: <Package size={32} />, title: "Gestione Kit", desc: "Vendi bundle di ricambi per aumentare il valore dell'ordine.", details: "Crea codici 'virtuali' che raggruppano più componenti (es. Kit Tagliando).", benefits: ["Cross-selling", "Kit pre-configurati", "Bundle virtuali"] },
     { id: 9, icon: <BarChart3 size={32} />, title: "Analytics & KPI", desc: "Analizza i dati per scoprire i trend di vendita e ricerca.", details: "Business Intelligence integrata per monitorare i ricambi più cercati e le performance di vendita.", benefits: ["Report vendite", "Analisi ricerche", "Monitoraggio rete"] },
     { id: 10, icon: <Languages size={32} />, title: "Supporto Multilingua", desc: "Vendi in tutto il mondo con cataloghi localizzati.", details: "Gestisci traduzioni centralizzate e supporta set di caratteri internazionali.", benefits: ["Traduzioni UI/Dati", "Supporto UTF-8", "Switch lingua"] },
     { id: 11, icon: <Pencil size={32} />, title: "Editor Grafico", desc: "Modifica disegni e pallinature direttamente nel browser.", details: "Non serve ricaricare il file per una piccola modifica. Con l'editor integrato puoi aggiungere, spostare o eliminare hotspot e codici direttamente sulle tavole.", benefits: ["Gestione Hotspot", "Correzioni Real-time", "Disegno su Tavola"] },
-    { id: 12, icon: <Wrench size={32} />, title: "Service & Manutenzione", desc: "Pianifica gli interventi tecnici e la manutenzione programmata.", details: "Pianifica interventi, gestisci ticket e collega i ricambi all'ordine di lavoro.", benefits: ["Ticketing", "Pianificazione", "Registro manutenzioni"] }
+    { id: 12, icon: <Wrench size={32} />, title: "Service & Manutenzione", desc: "Pianifica gli interventi tecnici e la manutenzione programmata.", details: "Pianifica interventi, gestisci ticket e collega i ricambi all'ordine di lavoro.", benefits: ["Ticketing", "Pianificazione", "Registro manutenzioni"] },
+    { id: 13, icon: <Layers size={32} />, title: "Multibrand", desc: "Gestisci cataloghi di marchi diversi in un'unica piattaforma.", details: "Gestisci cataloghi, listini e reti di vendita separati per ogni marchio del tuo gruppo, tutto da un unico pannello di amministrazione centralizzato.", benefits: ["Gestione centralizzata", "Branding personalizzato", "Reti vendita separate"] },
+    // --- NUOVE CARD AGGIUNTE ---
+    { id: 14, icon: <FileText size={32} />, title: "Preventivi", desc: "Trasforma il carrello in una richiesta d’offerta.", details: "Questa transizione agevola la generazione e la gestione di preventivi, inclusi sconti e tariffe, direttamente all’interno del portale.", benefits: ["Gestione sconti", "Workflow approvazione", "Conversione in ordine"] },
+    { id: 15, icon: <Bell size={32} />, title: "Centro Notifiche", desc: "Avvisa gli utenti di ogni aggiornamento di catalogo.", details: "Il centro notifiche garantisce un’informazione tempestiva e completa su nuovi cataloghi, promozioni o stato degli ordini. La tua segreteria digitale avanzata.", benefits: ["Aggiornamenti real-time", "Avvisi stato ordine", "Comunicazioni massive"] },
+    { id: 16, icon: <Paperclip size={32} />, title: "Allegati", desc: "Arricchisci i cataloghi con file di approfondimento.", details: "Senza restrizioni. Gli utenti possono scaricare manuali di istruzioni, schemi, video tutorial, certificazioni e altro ancora direttamente dalla scheda prodotto.", benefits: ["Download manuali", "Schede tecniche", "Certificazioni"] }
   ];
 
   const currentFeatures = features.slice(featurePage * ITEMS_PER_PAGE, (featurePage + 1) * ITEMS_PER_PAGE);
@@ -249,17 +255,13 @@ function App() {
             animate="visible"
             className="text-center md:text-left"
           >
-            <motion.div variants={fadeInUp} className="inline-block bg-sf-primary/10 text-sf-primary px-3 py-1 md:px-4 md:py-1 rounded-full text-xs md:text-sm font-bold mb-4 md:mb-6 border border-sf-primary/20">
-              🚀 LA RIVOLUZIONE DEL POST-VENDITA
-            </motion.div>
+         
             <motion.h1 variants={fadeInUp} className="text-4xl md:text-5xl lg:text-6xl font-extrabold text-sf-dark mb-4 md:mb-6 leading-tight">
-              Il Tuo Catalogo Ricambi <br/>
-              <span className="text-sf-primary">Potenziato dall'AI</span>
+              Il tuo catalogo <br/>
+              <span className="text-sf-primary">ricambi interattivo</span>
             </motion.h1>
             <motion.p variants={fadeInUp} className="text-lg md:text-xl text-gray-600 mb-6 md:mb-8 leading-relaxed">
-              ServiceFirst trasforma i tuoi disegni tecnici in un <strong>catalogo interattivo e-commerce</strong>. 
-              <br/><br/>
-              Elimina gli errori di ordinazione, riduci i tempi di gestione e <strong>aumenta le vendite di ricambi</strong> con la piattaforma scelta dai leader del settore machinery.
+              Crea e trasforma i tuoi cataloghi ricambi in un portale e-commerce B2B. Vendi i tuoi ricambi e potenzia il tuo business. Basta un click con l’intelligenza artificiale.
             </motion.p>
             <motion.div variants={fadeInUp} className="flex flex-col sm:flex-row gap-3 md:gap-4 justify-center md:justify-start">
               <motion.a 
@@ -351,7 +353,7 @@ function App() {
                     viewport={{ once: true }}
                     className="text-3xl md:text-4xl font-bold text-sf-dark mb-3 md:mb-4"
                   >
-                    Il Tuo Post-Vendita, Semplificato
+                    Funzionalità Principali
                   </motion.h2>
                   <p className="text-gray-500 max-w-2xl mx-auto text-sm md:text-base">
                     Una piattaforma completa. Clicca sulle card per approfondire.
@@ -391,7 +393,7 @@ function App() {
                         animate="center"
                         exit="exit"
                         transition={{
-                          x: { type: "tween", ease: "easeInOut", duration: 0.25 }, // VELOCIZZATO: 0.25s
+                          x: { type: "tween", ease: "easeInOut", duration: 0.25 }, // VELOCIZZATO
                           opacity: { duration: 0.2 }
                         }}
                         className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 md:gap-8"
@@ -608,17 +610,7 @@ function App() {
                         className="w-full rounded-2xl shadow-inner relative z-10"
                      />
 
-                     <motion.div 
-                       animate={{ y: [0, -10, 0] }}
-                       transition={{ duration: 4, repeat: Infinity }}
-                       className="absolute -bottom-6 -right-6 bg-sf-ai text-white p-6 rounded-3xl shadow-xl z-20 hidden md:block"
-                     >
-                        <div className="flex items-center gap-3 mb-1">
-                           <Sparkles size={24} className="text-yellow-300" />
-                           <span className="font-bold text-lg">100% Auto</span>
-                        </div>
-                        <div className="text-sm opacity-90">Riconoscimento Attivo</div>
-                     </motion.div>
+                 
                   </div>
                </motion.div>
 
