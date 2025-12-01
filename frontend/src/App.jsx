@@ -5,7 +5,9 @@ import {
   Database, Layers, Smartphone, Search, Globe, 
   ShoppingCart, MousePointer, BarChart3, Users, Sparkles, 
   TrendingUp, X, Check, Building2, Crown, Briefcase, 
-  Phone, User, MessageSquare, Lock
+  Phone, User, MessageSquare, Lock, ChevronLeft, ChevronRight,
+  Video, Package, Languages, Wrench, Boxes, Pencil, // AGGIUNTA ICONA PENCIL
+  Bot, FileUp, ScanLine, Wand2, CalendarDays, Truck, ClipboardList, LifeBuoy
 } from 'lucide-react';
 
 // --- IMPORTAZIONE LOGHI ---
@@ -17,15 +19,6 @@ import zoomlionLogo from './assets/img/loghi aggiunti/zoomlion-servicefirst.png'
 
 // --- IMPORTAZIONE IMMAGINI CATALOGO ---
 import iaImage from './assets/img/IA-Service-First.png';
-import generatorImage from './assets/img/EDITOR-catalogo-interattivo.webp';
-import editorImage from './assets/img/CATALOGO-SF-TAB-EDITOR.webp';
-import multilingueImage from './assets/img/CATALOGO-SF-TAB-MULTILINGUA.webp';
-
-// --- IMPORTAZIONE IMMAGINI VENDI CON IL CATALOGO ---
-import carrelloImage from './assets/img/CATALOGO-SF-CARRELLO-NUOVO.webp';
-import preventiviImage from './assets/img/CATALOGO-SFTAB-PREVENTIVI.webp';
-import pagamentiImage from './assets/img/CATALOGO-SF-TAB-PAGAMENTI.webp';
-import ordiniImage from './assets/img/CATALOGO-SF-TAB-ORDINI.webp';
 
 // --- VARIANTI ANIMAZIONI ---
 const fadeInUp = {
@@ -37,17 +30,27 @@ const staggerContainer = {
   hidden: { opacity: 0 },
   visible: {
     opacity: 1,
-    transition: { staggerChildren: 0.1, delayChildren: 0.1 }
+    transition: { staggerChildren: 0.05, delayChildren: 0.0 }
   }
 };
 
-const tabContentVariant = {
-  hidden: { opacity: 0, x: 20, filter: "blur(5px)" },
-  visible: { opacity: 1, x: 0, filter: "blur(0px)", transition: { duration: 0.4 } },
-  exit: { opacity: 0, x: -20, filter: "blur(5px)", transition: { duration: 0.3 } }
+const slideVariants = {
+  enter: (direction) => ({
+    x: direction > 0 ? 800 : -800,
+    opacity: 0
+  }),
+  center: {
+    zIndex: 1,
+    x: 0,
+    opacity: 1
+  },
+  exit: (direction) => ({
+    zIndex: 0,
+    x: direction < 0 ? 800 : -800,
+    opacity: 0
+  })
 };
 
-// --- COMPONENTI UTILITY ---
 const AnimatedCounter = ({ end, duration = 2500, suffix = '', prefix = '', color = 'text-sf-primary' }) => {
   const [count, setCount] = useState(0);
   const ref = useRef(null);
@@ -78,7 +81,6 @@ const AnimatedCounter = ({ end, duration = 2500, suffix = '', prefix = '', color
 };
 
 function App() {
-  // Stato del form esteso
   const [formData, setFormData] = useState({ 
     nome: '', 
     email: '', 
@@ -89,8 +91,13 @@ function App() {
     privacy: false 
   });
   const [status, setStatus] = useState(null);
-  const [activeTab, setActiveTab] = useState('ia');
-  const [activeVendiTab, setActiveVendiTab] = useState('carrello');
+  
+  // STATES PER LA SEZIONE FEATURES
+  const [selectedFeature, setSelectedFeature] = useState(null);
+  const [featurePage, setFeaturePage] = useState(0);
+  const [slideDirection, setSlideDirection] = useState(0);
+  
+  const ITEMS_PER_PAGE = 6;
 
   const handleChange = (e) => {
     const value = e.target.type === 'checkbox' ? e.target.checked : e.target.value;
@@ -109,8 +116,19 @@ function App() {
       const result = await response.json();
       setStatus(result.success ? 'success' : 'error');
     } catch (error) {
-      setTimeout(() => setStatus('success'), 1500); // Simulazione ritardo per vedere animazione loading
+      setTimeout(() => setStatus('success'), 1500); 
     }
+  };
+
+  const paginate = (newDirection) => {
+    setSlideDirection(newDirection);
+    setFeaturePage((prev) => {
+      const nextPage = prev + newDirection;
+      const maxPages = Math.ceil(features.length / ITEMS_PER_PAGE);
+      if (nextPage < 0) return maxPages - 1;
+      if (nextPage >= maxPages) return 0;
+      return nextPage;
+    });
   };
 
   // --- DATI PRICING ---
@@ -174,68 +192,23 @@ function App() {
     }
   ];
 
+  // --- FEATURES (12 Card totali inclusa Editor) ---
   const features = [
-    { icon: <Zap size={32} />, title: "Creazione con AI", desc: "Genera cataloghi multilingua in un click grazie all'Intelligenza Artificiale." },
-    { icon: <MousePointer size={32} />, title: "Navigazione Interattiva", desc: "Esplosi 2D/3D interattivi per identificare i ricambi senza errori." },
-    { icon: <ShoppingCart size={32} />, title: "E-Commerce B2B", desc: "Trasforma il catalogo in un portale di vendita attivo 24/7." },
-    { icon: <ShieldCheck size={32} />, title: "Zero Errori", desc: "Identificazione univoca per matricola: ordini sempre corretti." },
-    { icon: <Smartphone size={32} />, title: "App Mobile", desc: "Accedi al catalogo e ordina direttamente dal campo, anche offline." },
-    { icon: <Database size={32} />, title: "Integrazione ERP", desc: "Perfettamente integrato con il tuo gestionale aziendale." },
+    { id: 1, icon: <Zap size={32} />, title: "Creazione con AI", desc: "Genera cataloghi multilingua in un click grazie all'Intelligenza Artificiale.", details: "Il nostro motore AI analizza i tuoi PDF tecnici, riconosce i codici e crea automaticamente le associazioni con la distinta base. Risparmia fino al 90% del tempo di data-entry manuale.", benefits: ["Riconoscimento automatico", "Importazione massiva", "Zero errori umani"] },
+    { id: 2, icon: <MousePointer size={32} />, title: "Navigazione Interattiva", desc: "Esplosi 2D/3D interattivi per identificare i ricambi senza errori.", details: "Offri ai tuoi clienti un'esperienza visiva superiore. Cliccando sul componente nel disegno, questo viene evidenziato nella distinta.", benefits: ["Zoom profondo", "Evidenziazione bidirezionale", "Mobile Touch"] },
+    { id: 3, icon: <ShoppingCart size={32} />, title: "E-Commerce B2B", desc: "Trasforma il catalogo in un portale di vendita attivo 24/7.", details: "Gestisci listini personalizzati per cliente, sconti per quantità, diverse valute e metodi di pagamento sicuri.", benefits: ["Listini personalizzati", "Carrello persistente", "Pagamenti sicuri"] },
+    { id: 4, icon: <ShieldCheck size={32} />, title: "Zero Errori", desc: "Identificazione univoca per matricola: ordini sempre corretti.", details: "Filtra il catalogo inserendo il numero di matricola. Il cliente vedrà SOLO i ricambi compatibili.", benefits: ["Filtro Matricola", "Riduzione resi", "Storico modifiche"] },
+    { id: 5, icon: <Smartphone size={32} />, title: "App Mobile", desc: "Accedi al catalogo e ordina direttamente dal campo, anche offline.", details: "App nativa iOS/Android che permette ai tecnici di lavorare anche senza connessione internet.", benefits: ["Funzionamento Offline", "Scansione QR Code", "Notifiche Push"] },
+    { id: 6, icon: <Database size={32} />, title: "Integrazione ERP", desc: "Perfettamente integrato con il tuo gestionale aziendale.", details: "Sincronizzazione bidirezionale con SAP, Microsoft Dynamics, Zucchetti per prezzi e giacenze.", benefits: ["API RESTful", "Connettori pronti", "Sync real-time"] },
+    { id: 7, icon: <Video size={32} />, title: "Contenuti Multimediali", desc: "Arricchisci il catalogo con video, foto e manuali tecnici.", details: "Collega video tutorial e schede tecniche direttamente al codice del ricambio.", benefits: ["Video Tutorial", "Schede PDF", "Foto dettagliate"] },
+    { id: 8, icon: <Package size={32} />, title: "Gestione Kit", desc: "Vendi bundle di ricambi per aumentare il valore dell'ordine.", details: "Crea codici 'virtuali' che raggruppano più componenti (es. Kit Tagliando).", benefits: ["Cross-selling", "Kit pre-configurati", "Bundle virtuali"] },
+    { id: 9, icon: <BarChart3 size={32} />, title: "Analytics & KPI", desc: "Analizza i dati per scoprire i trend di vendita e ricerca.", details: "Business Intelligence integrata per monitorare i ricambi più cercati e le performance di vendita.", benefits: ["Report vendite", "Analisi ricerche", "Monitoraggio rete"] },
+    { id: 10, icon: <Languages size={32} />, title: "Supporto Multilingua", desc: "Vendi in tutto il mondo con cataloghi localizzati.", details: "Gestisci traduzioni centralizzate e supporta set di caratteri internazionali.", benefits: ["Traduzioni UI/Dati", "Supporto UTF-8", "Switch lingua"] },
+    { id: 11, icon: <Pencil size={32} />, title: "Editor Grafico", desc: "Modifica disegni e pallinature direttamente nel browser.", details: "Non serve ricaricare il file per una piccola modifica. Con l'editor integrato puoi aggiungere, spostare o eliminare hotspot e codici direttamente sulle tavole.", benefits: ["Gestione Hotspot", "Correzioni Real-time", "Disegno su Tavola"] },
+    { id: 12, icon: <Wrench size={32} />, title: "Service & Manutenzione", desc: "Pianifica gli interventi tecnici e la manutenzione programmata.", details: "Pianifica interventi, gestisci ticket e collega i ricambi all'ordine di lavoro.", benefits: ["Ticketing", "Pianificazione", "Registro manutenzioni"] }
   ];
 
-  const catalogTabs = {
-    ia: {
-      title: "L'AI che semplifica la creazione",
-      desc: "Creare un catalogo ricambi non è mai stato così veloce. Carica a portale il tuo file di origine, a tutto il resto ci pensa l'Intelligenza Artificiale dall'interattività tavole all'abbinamento ricambi, passando per la compilazione di tutte le anagrafi che.",
-      cta: "SCOPRI L'AI NEL CATALOGO RICAMBI →",
-      image: iaImage
-    },
-    generator: {
-      title: "Flessibilità assoluta",
-      desc: "Vuoi usare un metodo di caricamento classico? L'interattività dei disegni viene generata automaticamente da algoritmi proprietari che rendono cliccabili le pallinature. I cataloghi possono essere abbinati indistintamente a prodotti o matricole.",
-      cta: "SCOPRI LA FUNZIONE GENERATOR →",
-      image: generatorImage
-    },
-    editor: {
-      title: "Modifica online",
-      desc: "Sfrutta i vantaggi di poter intervenire sui disegni direttamente a sistema. Una funzione di post-produzione consente di editare le pallinature, velocizzando e semplificando enormemente la gestione dell'esistente.",
-      cta: "SCOPRI LA FUNZIONE EDITOR →",
-      image: editorImage
-    },
-    multilingua: {
-      title: "Cataloghi globali",
-      desc: "Fai consultare al cliente il portale nella sua lingua. Questo ti consente di espandere subito le tue vendite a livello globale senza problemi di comunicazione.",
-      cta: "SCOPRI LA FUNZIONE MULTILINGUA →",
-      image: multilingueImage
-    }
-  };
-
-  const vendiTabs = {
-    carrello: {
-      title: "Customer journey intuitiva",
-      desc: "Facilita l'esperienza d'acquisto con l'assegnazione automatica di listino, sconti e IVA. L'utente può indicare il livello d'urgenza della spedizione e sfruttare la comoda opzione 'Salva per dopo', in grado di scorporare i ricambi dall'ordine senza cancellarli dal carrello.",
-      cta: "SCOPRI LA FUNZIONE CARRELLO →",
-      image: carrelloImage
-    },
-    preventivi: {
-      title: "Acquisti istantanei",
-      desc: "Sfrutta la comodità del gateway di pagamento integrato di ServiceFirst. L'utente può acquistare i ricambi istantaneamente, con la flessibilità di scegliere tra le vari metodi di pagamento e di indicare l'indirizzo di spedizione.",
-      cta: "SCOPRI LA FUNZIONE PAGAMENTI →",
-      image: preventiviImage
-    },
-    pagamenti: {
-      title: "Modalità 'Richiesta' senza importi",
-      desc: "Non vuoi mostrare gli importi a sistema? Nessun problema: trasforma il carrello in una richiesta d'offerta. Questa transizione agevola la generazione e la gestione di preventivi, inclusi sconti e tariffe, direttamente all'interno del portale.",
-      cta: "SCOPRI LA FUNZIONE PREVENTIVI →",
-      image: pagamentiImage
-    },
-    ordini: {
-      title: "Tutte le info al loro posto",
-      desc: "Monitora lo stato degli ordini, accedi ai dettagli e ottieni aggiornamenti in tempo reale. Non dovrai più impazzire per trovare le informazioni di cui hai bisogno.",
-      cta: "SCOPRI LA FUNZIONE ORDINI →",
-      image: ordiniImage
-    }
-  };
+  const currentFeatures = features.slice(featurePage * ITEMS_PER_PAGE, (featurePage + 1) * ITEMS_PER_PAGE);
 
   const brandLogos = [cifaLogo, energreenLogo, geetitLogo, fiveLogo, zoomlionLogo];
 
@@ -276,7 +249,9 @@ function App() {
             animate="visible"
             className="text-center md:text-left"
           >
-           
+            <motion.div variants={fadeInUp} className="inline-block bg-sf-primary/10 text-sf-primary px-3 py-1 md:px-4 md:py-1 rounded-full text-xs md:text-sm font-bold mb-4 md:mb-6 border border-sf-primary/20">
+              🚀 LA RIVOLUZIONE DEL POST-VENDITA
+            </motion.div>
             <motion.h1 variants={fadeInUp} className="text-4xl md:text-5xl lg:text-6xl font-extrabold text-sf-dark mb-4 md:mb-6 leading-tight">
               Il Tuo Catalogo Ricambi <br/>
               <span className="text-sf-primary">Potenziato dall'AI</span>
@@ -356,252 +331,360 @@ function App() {
         </div>
       </div>
 
-      {/* Features Section */}
-      <section id="features" className="scroll-mt-32 md:scroll-mt-40 py-16 md:py-24 bg-gray-50">
+      {/* Features Section - SLIDER VELOCE E INTERATTIVA */}
+      <section id="features" className="scroll-mt-32 md:scroll-mt-40 py-16 md:py-24 bg-gray-50 min-h-[850px] transition-all duration-500">
         <div className="max-w-7xl mx-auto px-4 md:px-6">
-          <div className="text-center mb-10 md:mb-16">
-            <motion.h2 
-              initial={{ opacity: 0, y: 20 }}
-              whileInView={{ opacity: 1, y: 0 }}
-              viewport={{ once: true }}
-              className="text-3xl md:text-4xl font-bold text-sf-dark mb-3 md:mb-4"
-            >
-              Il Tuo Post-Vendita, Semplificato
-            </motion.h2>
-            <p className="text-gray-500 max-w-2xl mx-auto text-sm md:text-base">
-              ServiceFirst non è solo un catalogo, è una suite completa per ottimizzare ogni aspetto del service e della vendita ricambi.
-            </p>
-          </div>
           
-          <motion.div 
-            variants={staggerContainer}
-            initial="hidden"
-            whileInView="visible"
-            viewport={{ once: true, margin: "-50px" }}
-            className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 md:gap-8"
-          >
-            {features.map((feat, idx) => (
+          <AnimatePresence mode="wait">
+            {/* VISTA 1: GRID CON SLIDER (Nessuna card selezionata) */}
+            {!selectedFeature && (
               <motion.div 
-                key={idx}
-                variants={fadeInUp}
-                whileHover={{ y: -10, boxShadow: "0 10px 30px -10px rgba(0,0,0,0.1)" }}
-                className="group p-6 md:p-8 bg-white rounded-2xl border border-gray-100 transition duration-300 cursor-default"
+                key="grid"
+                initial={{ opacity: 0 }}
+                animate={{ opacity: 1 }}
+                exit={{ opacity: 0 }}
               >
-                <div className="w-12 h-12 md:w-14 md:h-14 bg-sf-light rounded-xl flex items-center justify-center text-sf-primary mb-4 md:mb-6 group-hover:bg-sf-primary group-hover:text-white transition duration-300">
-                  {feat.icon}
-                </div>
-                <h3 className="text-lg md:text-xl font-bold text-sf-dark mb-2 group-hover:text-sf-primary transition">{feat.title}</h3>
-                <p className="text-gray-600 text-sm leading-relaxed">{feat.desc}</p>
-              </motion.div>
-            ))}
-          </motion.div>
-        </div>
-      </section>
-
-      {/* CREA CATALOGHI Section */}
-      <section className="scroll-mt-32 md:scroll-mt-40 py-16 md:py-24 bg-white">
-        <div className="max-w-7xl mx-auto px-4 md:px-6">
-          <div className="text-center mb-10 md:mb-16">
-            <motion.div 
-              initial={{ rotate: -2, scale: 0.9, opacity: 0 }}
-              whileInView={{ rotate: -2, scale: 1, opacity: 1 }}
-              viewport={{ once: true }}
-              className="inline-block bg-sf-primary text-white px-6 py-3 rounded-lg font-bold text-lg md:text-xl mb-6 transform -rotate-2 shadow-lg"
-            >
-              CREA CATALOGHI RICAMBI
-            </motion.div>
-            <h2 className="text-gray-700 text-lg md:text-xl font-bold mb-4">
-              Digitalizzare i tuoi cataloghi ricambi non è mai stato così semplice.
-            </h2>
-            <p className="text-gray-600 max-w-3xl mx-auto text-sm md:text-base leading-relaxed">
-              Convertí o crea i tuoi cataloghi ricambi interattivi con ServiceFirst, senza limiti. Ti basta un click per trasformare i tuoi cataloghi in un portale e-commerce, indipendentemente dal loro formato d'origine grazie all'Intelligenza Artificiale. Grazie ad un editor completo di tutte le funzionalità necessari puoi gestire e modificare i disegni caricati direttamente da sistema.
-            </p>
-          </div>
-
-          {/* Tab Navigation */}
-          <div className="flex flex-wrap justify-center gap-2 md:gap-4 mb-12 border-b border-gray-200 pb-4">
-            {['ia', 'generator', 'editor', 'multilingua'].map((tab) => {
-              const labels = {
-                ia: 'INTELLIGENZA ARTIFICIALE',
-                generator: 'GENERATOR',
-                editor: 'EDITOR',
-                multilingua: 'MULTILINGUA'
-              };
-              return (
-                <button
-                  key={tab}
-                  onClick={() => setActiveTab(tab)}
-                  className={`px-4 md:px-6 py-2 md:py-3 font-bold text-xs md:text-sm transition-all whitespace-nowrap relative ${
-                    activeTab === tab ? 'text-sf-primary' : 'text-gray-600 hover:text-sf-dark'
-                  }`}
-                >
-                  {labels[tab]}
-                  {activeTab === tab && (
-                    <motion.div 
-                      layoutId="activeTab"
-                      className="absolute bottom-0 left-0 right-0 h-0.5 bg-sf-primary"
-                    />
-                  )}
-                </button>
-              );
-            })}
-          </div>
-
-          {/* Tab Content */}
-          <div className="min-h-[400px] relative">
-            <AnimatePresence mode="wait">
-              <motion.div
-                key={activeTab}
-                variants={tabContentVariant}
-                initial="hidden"
-                animate="visible"
-                exit="exit"
-                className="grid md:grid-cols-2 gap-10 md:gap-16 items-center"
-              >
-                <div className="relative hidden md:block">
-                  <motion.div 
-                    whileHover={{ scale: 1.02 }}
-                    className="bg-gray-100 rounded-2xl p-4 md:p-6 border-2 border-gray-200 overflow-hidden shadow-lg hover:shadow-xl transition"
+                <div className="text-center mb-8 md:mb-12">
+                  <motion.h2 
+                    initial={{ opacity: 0, y: 20 }}
+                    whileInView={{ opacity: 1, y: 0 }}
+                    viewport={{ once: true }}
+                    className="text-3xl md:text-4xl font-bold text-sf-dark mb-3 md:mb-4"
                   >
-                    <img 
-                      src={catalogTabs[activeTab].image}
-                      alt={`Tab ${activeTab}`}
-                      className="w-full h-auto rounded-lg object-cover"
-                    />
-                  </motion.div>
-                </div>
-
-                <div className="flex flex-col justify-center order-first md:order-last">
-                  <h3 className="text-2xl md:text-3xl lg:text-4xl font-bold text-sf-dark mb-4 md:mb-6">
-                    {catalogTabs[activeTab].title}
-                  </h3>
-                  <p className="text-gray-600 text-base md:text-lg leading-relaxed mb-6 md:mb-8">
-                    {catalogTabs[activeTab].desc}
+                    Il Tuo Post-Vendita, Semplificato
+                  </motion.h2>
+                  <p className="text-gray-500 max-w-2xl mx-auto text-sm md:text-base">
+                    Una piattaforma completa. Clicca sulle card per approfondire.
                   </p>
-                  <a href="#form" className="inline-flex items-center gap-2 text-sf-primary font-bold hover:text-sf-dark transition text-sm md:text-base group">
-                    {catalogTabs[activeTab].cta} <span className="group-hover:translate-x-1 transition-transform">→</span>
-                  </a>
                 </div>
+                
+                {/* CONTAINER DELLO SLIDER */}
+                <div className="relative px-4 md:px-12">
+                  {/* Pulsante Precedente */}
+                  <div className="absolute top-1/2 left-0 md:-left-8 transform -translate-y-1/2 z-10">
+                    <button 
+                      onClick={() => paginate(-1)}
+                      className="bg-white p-3 rounded-full shadow-lg border border-gray-100 text-sf-dark hover:text-sf-primary hover:scale-110 transition"
+                    >
+                      <ChevronLeft size={24} />
+                    </button>
+                  </div>
 
-                <div className="relative md:hidden order-last">
-                  <div className="bg-gray-100 rounded-2xl p-4 border-2 border-gray-200 overflow-hidden shadow-lg">
-                    <img 
-                      src={catalogTabs[activeTab].image}
-                      alt={`Tab ${activeTab}`}
-                      className="w-full h-auto rounded-lg object-cover"
-                    />
+                  {/* Pulsante Successivo */}
+                  <div className="absolute top-1/2 right-0 md:-right-8 transform -translate-y-1/2 z-10">
+                    <button 
+                      onClick={() => paginate(1)}
+                      className="bg-white p-3 rounded-full shadow-lg border border-gray-100 text-sf-dark hover:text-sf-primary hover:scale-110 transition"
+                    >
+                      <ChevronRight size={24} />
+                    </button>
+                  </div>
+
+                  {/* Griglia Animata */}
+                  <div className="overflow-hidden min-h-[500px] py-4">
+                    <AnimatePresence initial={false} custom={slideDirection} mode="wait">
+                      <motion.div
+                        key={featurePage}
+                        custom={slideDirection}
+                        variants={slideVariants}
+                        initial="enter"
+                        animate="center"
+                        exit="exit"
+                        transition={{
+                          x: { type: "tween", ease: "easeInOut", duration: 0.25 }, // VELOCIZZATO: 0.25s
+                          opacity: { duration: 0.2 }
+                        }}
+                        className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 md:gap-8"
+                      >
+                        {currentFeatures.map((feat) => (
+                          <motion.div 
+                            key={feat.id}
+                            layoutId={`card-${feat.id}`}
+                            onClick={() => setSelectedFeature(feat)}
+                            whileHover={{ y: -10, boxShadow: "0 20px 40px -10px rgba(0,0,0,0.15)" }}
+                            className="group p-6 md:p-8 bg-white rounded-2xl border border-gray-100 transition duration-300 cursor-pointer h-full flex flex-col items-start min-h-[250px]"
+                          >
+                            <motion.div 
+                              layoutId={`icon-${feat.id}`}
+                              className="w-14 h-14 bg-sf-light rounded-xl flex items-center justify-center text-sf-primary mb-4 md:mb-6 group-hover:bg-sf-primary group-hover:text-white transition duration-300"
+                            >
+                              {feat.icon}
+                            </motion.div>
+                            <motion.h3 layoutId={`title-${feat.id}`} className="text-lg md:text-xl font-bold text-sf-dark mb-2 group-hover:text-sf-primary transition">{feat.title}</motion.h3>
+                            <motion.p className="text-gray-600 text-sm leading-relaxed mb-4 flex-grow">{feat.desc}</motion.p>
+                            <div className="text-sf-primary font-bold text-sm flex items-center gap-2 opacity-0 group-hover:opacity-100 transition-opacity mt-auto">
+                              Scopri di più <ArrowRight size={16} />
+                            </div>
+                          </motion.div>
+                        ))}
+                      </motion.div>
+                    </AnimatePresence>
+                  </div>
+
+                  {/* Indicatori Paginazione (Pallini) */}
+                  <div className="flex justify-center gap-2 mt-8">
+                    {Array.from({ length: Math.ceil(features.length / ITEMS_PER_PAGE) }).map((_, idx) => (
+                      <div 
+                        key={idx}
+                        className={`w-3 h-3 rounded-full transition-all duration-300 ${featurePage === idx ? 'bg-sf-primary w-6' : 'bg-gray-300'}`}
+                      />
+                    ))}
                   </div>
                 </div>
               </motion.div>
-            </AnimatePresence>
-          </div>
+            )}
+
+            {/* VISTA 2: FOCUS (Card selezionata + Dettagli) */}
+            {selectedFeature && (
+              <motion.div 
+                key="focus"
+                initial={{ opacity: 0 }}
+                animate={{ opacity: 1 }}
+                exit={{ opacity: 0 }}
+                className="grid lg:grid-cols-2 gap-8 items-start h-full"
+              >
+                {/* Colonna Sinistra: Card Selezionata (Espansa Visivamente) */}
+                <motion.div 
+                  layoutId={`card-${selectedFeature.id}`}
+                  className="bg-white p-8 md:p-12 rounded-3xl border-2 border-sf-primary/20 shadow-2xl relative overflow-hidden"
+                >
+                  <div className="absolute top-0 right-0 p-4">
+                    <button 
+                      onClick={(e) => { e.stopPropagation(); setSelectedFeature(null); }}
+                      className="bg-gray-100 hover:bg-gray-200 p-2 rounded-full transition"
+                    >
+                      <X size={24} className="text-gray-500" />
+                    </button>
+                  </div>
+
+                  <motion.div 
+                    layoutId={`icon-${selectedFeature.id}`}
+                    className="w-20 h-20 bg-sf-primary text-white rounded-2xl flex items-center justify-center mb-8 shadow-lg shadow-sf-primary/30"
+                  >
+                    {React.cloneElement(selectedFeature.icon, { size: 40 })}
+                  </motion.div>
+                  
+                  <motion.h3 layoutId={`title-${selectedFeature.id}`} className="text-3xl md:text-4xl font-bold text-sf-dark mb-6">
+                    {selectedFeature.title}
+                  </motion.h3>
+                  
+                  <p className="text-xl text-gray-600 mb-8 leading-relaxed">
+                    {selectedFeature.desc}
+                  </p>
+
+                  <button 
+                    onClick={() => setSelectedFeature(null)}
+                    className="flex items-center gap-2 text-gray-400 hover:text-sf-dark transition font-bold"
+                  >
+                    <ChevronLeft size={20} /> Torna alla griglia
+                  </button>
+                </motion.div>
+
+                {/* Colonna Destra: Dettagli Approfonditi (Apparizione) */}
+                <motion.div 
+                  initial={{ opacity: 0, x: 50 }}
+                  animate={{ opacity: 1, x: 0 }}
+                  transition={{ delay: 0.1, duration: 0.3 }} // Velocizzato
+                  className="flex flex-col justify-center h-full space-y-8 py-4 px-4"
+                >
+                  <div>
+                    <h4 className="text-sm font-bold text-sf-primary uppercase tracking-widest mb-4">APPROFONDIMENTO</h4>
+                    <p className="text-lg md:text-xl text-sf-dark leading-relaxed">
+                      {selectedFeature.details}
+                    </p>
+                  </div>
+
+                  <div className="bg-white rounded-2xl p-6 md:p-8 shadow-lg border border-gray-100">
+                    <h5 className="font-bold text-lg mb-4 flex items-center gap-2">
+                      <Sparkles className="text-yellow-500" size={20} /> Vantaggi Chiave
+                    </h5>
+                    <ul className="space-y-4">
+                      {selectedFeature.benefits.map((benefit, i) => (
+                        <motion.li 
+                          key={i}
+                          initial={{ opacity: 0, y: 10 }}
+                          animate={{ opacity: 1, y: 0 }}
+                          transition={{ delay: 0.2 + (i * 0.05) }} // Cascata più veloce
+                          className="flex items-start gap-3"
+                        >
+                          <div className="mt-1 bg-green-100 p-1 rounded-full">
+                            <Check size={14} className="text-green-600" />
+                          </div>
+                          <span className="text-gray-700 font-medium">{benefit}</span>
+                        </motion.li>
+                      ))}
+                    </ul>
+                  </div>
+
+                  <div className="pt-4">
+                    <a href="#form" className="inline-flex items-center gap-3 bg-sf-dark text-white px-8 py-4 rounded-xl font-bold hover:bg-sf-primary transition shadow-lg shadow-gray-900/20">
+                      Richiedi una Demo su questo <ArrowRight size={20} />
+                    </a>
+                  </div>
+                </motion.div>
+              </motion.div>
+            )}
+          </AnimatePresence>
+
         </div>
       </section>
 
-      {/* VENDI CON IL CATALOGO Section */}
-      <section className="scroll-mt-32 md:scroll-mt-40 py-16 md:py-24 bg-gray-50">
-        <div className="max-w-7xl mx-auto px-4 md:px-6">
-          <div className="text-center mb-10 md:mb-16">
-            <motion.div 
-              initial={{ rotate: 2, scale: 0.9, opacity: 0 }}
-              whileInView={{ rotate: 2, scale: 1, opacity: 1 }}
-              viewport={{ once: true }}
-              className="inline-block bg-sf-primary text-white px-6 py-3 rounded-lg font-bold text-lg md:text-xl mb-6 transform rotate-2 shadow-lg"
-            >
-              VENDI CON IL CATALOGO
-            </motion.div>
-            <h2 className="text-gray-700 text-lg md:text-xl font-bold mb-4">
-              Il portale e-commerce B2B intuitivo e innovativo che incrementa la vendita dei ricambi.
-            </h2>
-            <p className="text-gray-600 max-w-3xl mx-auto text-sm md:text-base leading-relaxed">
-              I tuoi clienti e rivenditori potranno <strong>accedere al portale da qualsiasi dispositivo</strong> e consultare i cataloghi ricambi attraverso l'intuitivo processo guidato di selezione miniature prodotti, cataloghi e tavole oppure con la ricerca diretta per matricola o codice ricambio.
-              <br/><br/>
-              L'albero da una chiara rappresentazione della struttura del catalogo per una migliore navigazione. L'interattività consente di identificare facilmente i ricambi da selezionare sia a livello di tavola che di elenco. Grazie al gateway di pagamento integrato, l'utente può <strong>acquistare i ricambi a carrello</strong> con qualsiasi metodo di pagamento e tenere monitorati i suoi ordini.
-            </p>
-          </div>
+      {/* SEZIONE INTELLIGENZA ARTIFICIALE */}
+      <section id="ia" className="py-20 bg-[#1a1a1a] text-white relative overflow-hidden">
+         <div className="absolute top-0 right-0 w-[500px] h-[500px] bg-sf-ai/20 rounded-full blur-[120px] pointer-events-none"></div>
+         <div className="absolute bottom-0 left-0 w-[400px] h-[400px] bg-sf-primary/10 rounded-full blur-[100px] pointer-events-none"></div>
 
-          {/* Tab Navigation */}
-          <div className="flex flex-wrap justify-center gap-2 md:gap-4 mb-12 border-b border-gray-200 pb-4">
-            {['carrello', 'preventivi', 'pagamenti', 'ordini'].map((tab) => {
-              const labels = {
-                carrello: 'CARRELLO',
-                preventivi: 'PREVENTIVI',
-                pagamenti: 'PAGAMENTI',
-                ordini: 'ORDINI'
-              };
-              return (
-                <button
-                  key={tab}
-                  onClick={() => setActiveVendiTab(tab)}
-                  className={`px-4 md:px-6 py-2 md:py-3 font-bold text-xs md:text-sm transition-all whitespace-nowrap uppercase tracking-wide relative ${
-                    activeVendiTab === tab ? 'text-sf-primary' : 'text-gray-600 hover:text-sf-dark'
-                  }`}
-                >
-                  {labels[tab]}
-                  {activeVendiTab === tab && (
-                    <motion.div 
-                      layoutId="activeVendiTab"
-                      className="absolute bottom-0 left-0 right-0 h-0.5 bg-sf-primary"
-                    />
-                  )}
-                </button>
-              );
-            })}
-          </div>
-
-          {/* Tab Content */}
-          <div className="min-h-[400px] relative">
-            <AnimatePresence mode="wait">
-              <motion.div
-                key={activeVendiTab}
-                variants={tabContentVariant}
-                initial="hidden"
-                animate="visible"
-                exit="exit"
-                className="grid md:grid-cols-2 gap-10 md:gap-16 items-center"
-              >
-                <div className="relative hidden md:block">
-                  <motion.div 
-                    whileHover={{ scale: 1.02 }}
-                    className="bg-white rounded-2xl p-4 md:p-6 border-2 border-gray-200 overflow-hidden shadow-lg hover:shadow-xl transition"
-                  >
-                    <img 
-                      src={vendiTabs[activeVendiTab].image}
-                      alt={`Tab ${activeVendiTab}`}
-                      className="w-full h-auto rounded-lg object-cover"
-                    />
-                  </motion.div>
-                </div>
-
-                <div className="flex flex-col justify-center order-first md:order-last">
-                  <h3 className="text-2xl md:text-3xl lg:text-4xl font-bold text-sf-dark mb-4 md:mb-6">
-                    {vendiTabs[activeVendiTab].title}
-                  </h3>
-                  <p className="text-gray-600 text-base md:text-lg leading-relaxed mb-6 md:mb-8">
-                    {vendiTabs[activeVendiTab].desc}
-                  </p>
-                  <a href="#form" className="inline-flex items-center gap-2 text-sf-primary font-bold hover:text-sf-dark transition text-sm md:text-base group">
-                    {vendiTabs[activeVendiTab].cta} <span className="group-hover:translate-x-1 transition-transform">→</span>
-                  </a>
-                </div>
-
-                <div className="relative md:hidden order-last">
-                  <div className="bg-white rounded-2xl p-4 border-2 border-gray-200 overflow-hidden shadow-lg">
-                    <img 
-                      src={vendiTabs[activeVendiTab].image}
-                      alt={`Tab ${activeVendiTab}`}
-                      className="w-full h-auto rounded-lg object-cover"
-                    />
+         <div className="max-w-7xl mx-auto px-4 md:px-6 relative z-10">
+            <div className="grid lg:grid-cols-2 gap-16 items-center">
+               
+               {/* Testo e Contenuto */}
+               <motion.div
+                 initial={{ opacity: 0, x: -30 }}
+                 whileInView={{ opacity: 1, x: 0 }}
+                 transition={{ duration: 0.6 }}
+                 viewport={{ once: true }}
+               >
+                  <div className="inline-flex items-center gap-2 bg-sf-ai/20 text-sf-ai border border-sf-ai/30 px-4 py-1.5 rounded-full text-xs font-bold mb-6 uppercase tracking-wider">
+                    <Bot size={16} /> Intelligenza Artificiale
                   </div>
-                </div>
+                  
+                  <h2 className="text-4xl md:text-5xl font-extrabold mb-6 leading-tight">
+                    Cataloghi digitali interattivi <span className="text-transparent bg-clip-text bg-gradient-to-r from-sf-ai to-purple-300">in un istante!</span>
+                  </h2>
+                  
+                  <p className="text-lg text-gray-300 mb-8 leading-relaxed">
+                    Azzera i tempi di conversione. Scopri com’è facile trasformare il tuo catalogo ricambi in un portale e-commerce interattivo. 
+                    <strong className="text-white block mt-2">Bastano davvero pochi secondi.</strong>
+                  </p>
+
+                  <div className="space-y-6">
+                     <div className="flex gap-5">
+                        <div className="mt-1 bg-gray-800 p-3 rounded-xl h-fit border border-gray-700">
+                           <ScanLine size={24} className="text-sf-ai"/>
+                        </div>
+                        <div>
+                           <h4 className="text-xl font-bold mb-2">Rende interattiva qualunque immagine</h4>
+                           <p className="text-gray-400 text-sm leading-relaxed">
+                             Dimenticati i limiti. L'IA rende interattivo qualsiasi disegno (anche raster/JPG) e assegna in automatico codici e descrizioni.
+                           </p>
+                        </div>
+                     </div>
+
+                     <div className="flex gap-5">
+                        <div className="mt-1 bg-gray-800 p-3 rounded-xl h-fit border border-gray-700">
+                           <Wand2 size={24} className="text-sf-ai"/>
+                        </div>
+                        <div>
+                           <h4 className="text-xl font-bold mb-2">Abbina i ricambi in automatico</h4>
+                           <p className="text-gray-400 text-sm leading-relaxed">
+                             Lascia che l'IA crei le anagrafiche ricambi e le colleghi alle tavole. Risparmia ore di lavoro manuale.
+                           </p>
+                        </div>
+                     </div>
+                  </div>
+
+                  <div className="mt-10 flex flex-col sm:flex-row gap-4">
+                    <a href="#form" className="flex justify-center items-center gap-2 bg-sf-ai text-white px-8 py-4 rounded-xl font-bold text-lg shadow-lg shadow-sf-ai/30 hover:bg-[#a00fe0] transition transform hover:-translate-y-1">
+                       <FileUp size={20} /> Carica il tuo PDF
+                    </a>
+                  </div>
+               </motion.div>
+
+               {/* Visuale IA */}
+               <motion.div
+                 initial={{ opacity: 0, scale: 0.9 }}
+                 whileInView={{ opacity: 1, scale: 1 }}
+                 transition={{ duration: 0.8 }}
+                 viewport={{ once: true }}
+                 className="relative"
+               >
+                  <div className="bg-gradient-to-br from-gray-800 to-gray-900 rounded-3xl p-2 border border-gray-700 shadow-2xl relative overflow-hidden group">
+                     <div className="absolute inset-0 bg-[url('https://www.transparenttextures.com/patterns/circuit-board.png')] opacity-10"></div>
+                     <div className="absolute top-0 left-0 w-full h-1 bg-sf-ai/50 shadow-[0_0_20px_rgba(180,17,237,0.8)] animate-scan pointer-events-none"></div>
+                     
+                     <img 
+                        src={iaImage} 
+                        alt="AI Interface" 
+                        className="w-full rounded-2xl shadow-inner relative z-10"
+                     />
+
+                     <motion.div 
+                       animate={{ y: [0, -10, 0] }}
+                       transition={{ duration: 4, repeat: Infinity }}
+                       className="absolute -bottom-6 -right-6 bg-sf-ai text-white p-6 rounded-3xl shadow-xl z-20 hidden md:block"
+                     >
+                        <div className="flex items-center gap-3 mb-1">
+                           <Sparkles size={24} className="text-yellow-300" />
+                           <span className="font-bold text-lg">100% Auto</span>
+                        </div>
+                        <div className="text-sm opacity-90">Riconoscimento Attivo</div>
+                     </motion.div>
+                  </div>
+               </motion.div>
+
+            </div>
+         </div>
+      </section>
+
+      {/* NUOVA SEZIONE ESTENSIONI (Sostituisce i duplicati) */}
+      <section id="extensions" className="py-20 bg-white">
+        <div className="max-w-7xl mx-auto px-4 md:px-6">
+           <div className="text-center mb-16">
+              <h2 className="text-3xl md:text-4xl font-bold text-sf-dark mb-4">Espandi le Possibilità</h2>
+              <p className="text-gray-500 max-w-2xl mx-auto text-lg">
+                 ServiceFirst cresce con te. Aggiungi moduli specialistici per coprire ogni aspetto del post-vendita.
+              </p>
+           </div>
+
+           <div className="grid md:grid-cols-2 gap-10">
+              {/* CARD 1: ASSISTENZA */}
+              <motion.div 
+                 whileHover={{ y: -5 }}
+                 className="bg-gradient-to-br from-blue-50 to-white p-8 md:p-10 rounded-3xl border border-blue-100 shadow-lg flex flex-col md:flex-row gap-6 items-center md:items-start"
+              >
+                 <div className="bg-blue-100 p-4 rounded-2xl text-blue-600">
+                    <LifeBuoy size={40} />
+                 </div>
+                 <div>
+                    <h3 className="text-2xl font-bold text-sf-dark mb-3">ServiceFirst Assistenza</h3>
+                    <p className="text-gray-600 mb-6 leading-relaxed">
+                       Gestisci i ticket di assistenza e pianifica gli interventi tecnici sul campo. Collega i ricambi utilizzati direttamente all'ordine di lavoro per una tracciabilità completa.
+                    </p>
+                    <ul className="space-y-2 mb-6">
+                       <li className="flex items-center gap-2 text-sm font-medium text-gray-700"><Check size={16} className="text-blue-500"/> Ticketing System Avanzato</li>
+                       <li className="flex items-center gap-2 text-sm font-medium text-gray-700"><Check size={16} className="text-blue-500"/> Pianificazione Tecnici (Agenda)</li>
+                       <li className="flex items-center gap-2 text-sm font-medium text-gray-700"><Check size={16} className="text-blue-500"/> Rapportini di Intervento Digitali</li>
+                    </ul>
+                 </div>
               </motion.div>
-            </AnimatePresence>
-          </div>
+
+              {/* CARD 2: NOLEGGI */}
+              <motion.div 
+                 whileHover={{ y: -5 }}
+                 className="bg-gradient-to-br from-orange-50 to-white p-8 md:p-10 rounded-3xl border border-orange-100 shadow-lg flex flex-col md:flex-row gap-6 items-center md:items-start"
+              >
+                 <div className="bg-orange-100 p-4 rounded-2xl text-orange-600">
+                    <CalendarDays size={40} />
+                 </div>
+                 <div>
+                    <h3 className="text-2xl font-bold text-sf-dark mb-3">ServiceFirst Noleggi</h3>
+                    <p className="text-gray-600 mb-6 leading-relaxed">
+                       Hai una flotta di macchine a noleggio? Gestisci contratti, scadenze e manutenzioni programmate in un unico posto. Non perdere mai una scadenza.
+                    </p>
+                    <ul className="space-y-2 mb-6">
+                       <li className="flex items-center gap-2 text-sm font-medium text-gray-700"><Check size={16} className="text-orange-500"/> Gestione Flotta e Contratti</li>
+                       <li className="flex items-center gap-2 text-sm font-medium text-gray-700"><Check size={16} className="text-orange-500"/> Scadenziario Manutenzioni</li>
+                       <li className="flex items-center gap-2 text-sm font-medium text-gray-700"><Check size={16} className="text-orange-500"/> Check-in / Check-out Macchine</li>
+                    </ul>
+                 </div>
+              </motion.div>
+           </div>
         </div>
       </section>
 
       {/* SEZIONE PRICING (Piani e Funzionalità) */}
       <section id="pricing" className="py-20 bg-gradient-to-b from-teal-600 to-teal-700 relative overflow-hidden">
+        {/* ... (CONTENUTO IDENTICO A PRIMA) ... */}
         <div className="absolute inset-0 opacity-10 bg-[radial-gradient(#ffffff_1px,transparent_1px)] [background-size:20px_20px]"></div>
         
         <div className="max-w-7xl mx-auto px-4 md:px-6 relative z-10">
@@ -697,8 +780,6 @@ function App() {
       {/* Why Choose Us / Stats Section - MODIFICATA */}
       <section className="py-16 md:py-24 bg-sf-dark text-white relative overflow-hidden">
         <div className="absolute top-0 left-0 w-full h-full bg-[url('https://www.transparenttextures.com/patterns/carbon-fibre.png')] opacity-10"></div>
-        
-        {/* Animated Background Elements */}
         <motion.div animate={{ opacity: [0.1, 0.3, 0.1] }} transition={{ duration: 3, repeat: Infinity }} className="absolute top-20 right-10 w-72 h-72 bg-sf-primary/10 rounded-full blur-3xl"></motion.div>
         <motion.div animate={{ opacity: [0.1, 0.2, 0.1] }} transition={{ duration: 4, repeat: Infinity, delay: 1 }} className="absolute bottom-0 left-0 w-96 h-96 bg-teal-500/5 rounded-full blur-3xl"></motion.div>
         
@@ -1009,7 +1090,7 @@ function App() {
       <footer className="bg-white border-t border-gray-100 py-8 md:py-12">
         <div className="max-w-7xl mx-auto px-4 md:px-6 flex flex-col md:flex-row justify-between items-center gap-4 md:gap-6">
           <motion.div whileHover={{ scale: 1.1, filter: "grayscale(0%)", opacity: 1 }} className="w-20 md:w-24 opacity-80 grayscale transition cursor-pointer">
-             <img src="./src/assets/img/s1.png" alt="Service First" />
+             <img src="https://servicefirst.it/wp-content/uploads/2025/08/s1.png" alt="Service First" />
           </motion.div>
           <div className="flex gap-6 text-gray-400">
              <motion.div whileHover={{ color: "#0d9488", rotate: 15 }}><Globe size={20} className="cursor-pointer"/></motion.div>
