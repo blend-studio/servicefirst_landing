@@ -52,6 +52,12 @@ const slideVariants = {
   })
 };
 
+const tabContentVariant = {
+  hidden: { opacity: 0, x: 20, filter: "blur(5px)" },
+  visible: { opacity: 1, x: 0, filter: "blur(0px)", transition: { duration: 0.3 } },
+  exit: { opacity: 0, x: -20, filter: "blur(5px)", transition: { duration: 0.2 } }
+};
+
 const AnimatedCounter = ({ end, duration = 2500, suffix = '', prefix = '', color = 'text-sf-primary' }) => {
   const [count, setCount] = useState(0);
   const ref = useRef(null);
@@ -92,6 +98,7 @@ function App() {
     privacy: false 
   });
   const [status, setStatus] = useState(null);
+  const [activeTab, setActiveTab] = useState('ia'); 
   
   // STATES PER LA SEZIONE FEATURES
   const [selectedFeature, setSelectedFeature] = useState(null);
@@ -193,20 +200,16 @@ function App() {
     }
   ];
 
-  // --- FEATURES (16 Card totali) ---
+  // --- FEATURES (12 Card totali - rimosse alcune, aggiunte altre) ---
   const features = [
     { id: 1, icon: <Zap size={32} />, title: "Creazione con AI", desc: "Genera cataloghi multilingua in un click grazie all'Intelligenza Artificiale.", details: "Il nostro motore AI analizza i tuoi PDF tecnici, riconosce i codici e crea automaticamente le associazioni con la distinta base. Risparmia fino al 90% del tempo di data-entry manuale.", benefits: ["Riconoscimento automatico", "Importazione massiva", "Zero errori umani"] },
     { id: 2, icon: <MousePointer size={32} />, title: "Navigazione Interattiva", desc: "Esplosi 2D/3D interattivi per identificare i ricambi senza errori.", details: "Offri ai tuoi clienti un'esperienza visiva superiore. Cliccando sul componente nel disegno, questo viene evidenziato nella distinta e viceversa. Supportiamo SVG, PDF vettoriali e modelli 3D.", benefits: ["Zoom profondo", "Evidenziazione bidirezionale", "Mobile Touch"] },
     { id: 3, icon: <ShoppingCart size={32} />, title: "E-Commerce B2B", desc: "Trasforma il catalogo in un portale di vendita attivo 24/7.", details: "Gestisci listini personalizzati per cliente, sconti per quantità, diverse valute e metodi di pagamento sicuri direttamente nel portale ricambi.", benefits: ["Listini personalizzati", "Carrello persistente", "Gateway pagamenti integrati"] },
-    { id: 4, icon: <ShieldCheck size={32} />, title: "Zero Errori", desc: "Identificazione univoca per matricola: ordini sempre corretti.", details: "Filtra il catalogo inserendo il numero di matricola della macchina. Il cliente vedrà SOLO i ricambi compatibili con quella specifica versione, eliminando alla radice i resi per errato ordine.", benefits: ["Filtro Matricola", "Riduzione resi", "Storico modifiche"] },
-    { id: 5, icon: <Smartphone size={32} />, title: "App Mobile", desc: "Accedi al catalogo e ordina direttamente dal campo, anche offline.", details: "La nostra Progressive Web App (PWA) e le app native iOS/Android permettono ai tecnici di lavorare in cantiere anche senza connessione internet. Sincronizzazione automatica appena la rete torna disponibile.", benefits: ["Funzionamento Offline", "Scansione QR Code", "Notifiche Push"] },
-    { id: 6, icon: <Database size={32} />, title: "Integrazione ERP", desc: "Perfettamente integrato con il tuo gestionale aziendale.", details: "ServiceFirst dialoga con il tuo ERP (SAP, Microsoft Dynamics, Zucchetti, ecc.) per sincronizzare giacenze, prezzi e ordini in tempo reale. Niente più doppio inserimento dati.", benefits: ["API RESTful", "Connettori pronti", "Sync real-time"] },
     { id: 7, icon: <Video size={32} />, title: "Contenuti Multimediali", desc: "Arricchisci il catalogo con video, foto e manuali tecnici.", details: "Collega video tutorial e schede tecniche direttamente al codice del ricambio.", benefits: ["Video Tutorial", "Schede PDF", "Foto dettagliate"] },
     { id: 8, icon: <Package size={32} />, title: "Gestione Kit", desc: "Vendi bundle di ricambi per aumentare il valore dell'ordine.", details: "Crea codici 'virtuali' che raggruppano più componenti (es. Kit Tagliando).", benefits: ["Cross-selling", "Kit pre-configurati", "Bundle virtuali"] },
     { id: 9, icon: <BarChart3 size={32} />, title: "Analytics & KPI", desc: "Analizza i dati per scoprire i trend di vendita e ricerca.", details: "Business Intelligence integrata per monitorare i ricambi più cercati e le performance di vendita.", benefits: ["Report vendite", "Analisi ricerche", "Monitoraggio rete"] },
     { id: 10, icon: <Languages size={32} />, title: "Supporto Multilingua", desc: "Vendi in tutto il mondo con cataloghi localizzati.", details: "Gestisci traduzioni centralizzate e supporta set di caratteri internazionali.", benefits: ["Traduzioni UI/Dati", "Supporto UTF-8", "Switch lingua"] },
     { id: 11, icon: <Pencil size={32} />, title: "Editor Grafico", desc: "Modifica disegni e pallinature direttamente nel browser.", details: "Non serve ricaricare il file per una piccola modifica. Con l'editor integrato puoi aggiungere, spostare o eliminare hotspot e codici direttamente sulle tavole.", benefits: ["Gestione Hotspot", "Correzioni Real-time", "Disegno su Tavola"] },
-    { id: 12, icon: <Wrench size={32} />, title: "Service & Manutenzione", desc: "Pianifica gli interventi tecnici e la manutenzione programmata.", details: "Pianifica interventi, gestisci ticket e collega i ricambi all'ordine di lavoro.", benefits: ["Ticketing", "Pianificazione", "Registro manutenzioni"] },
     { id: 13, icon: <Layers size={32} />, title: "Multibrand", desc: "Gestisci cataloghi di marchi diversi in un'unica piattaforma.", details: "Gestisci cataloghi, listini e reti di vendita separati per ogni marchio del tuo gruppo, tutto da un unico pannello di amministrazione centralizzato.", benefits: ["Gestione centralizzata", "Branding personalizzato", "Reti vendita separate"] },
     // --- NUOVE CARD AGGIUNTE ---
     { id: 14, icon: <FileText size={32} />, title: "Preventivi", desc: "Trasforma il carrello in una richiesta d’offerta.", details: "Questa transizione agevola la generazione e la gestione di preventivi, inclusi sconti e tariffe, direttamente all’interno del portale.", benefits: ["Gestione sconti", "Workflow approvazione", "Conversione in ordine"] },
@@ -255,7 +258,7 @@ function App() {
             animate="visible"
             className="text-center md:text-left"
           >
-         
+           
             <motion.h1 variants={fadeInUp} className="text-4xl md:text-5xl lg:text-6xl font-extrabold text-sf-dark mb-4 md:mb-6 leading-tight">
               Il tuo catalogo <br/>
               <span className="text-sf-primary">ricambi interattivo</span>
@@ -312,6 +315,8 @@ function App() {
         </div>
       </header>
 
+      
+
       {/* Brand Strip */}
       <div className="py-8 md:py-10 bg-white border-y border-gray-100 overflow-hidden">
         <div className="max-w-7xl mx-auto px-4 md:px-6 mb-4 md:mb-6">
@@ -332,6 +337,160 @@ function App() {
           </div>
         </div>
       </div>
+
+      {/* Why Choose Us / Stats Section - MODIFICATA */}
+      <section className="py-16 md:py-24 bg-sf-dark text-white relative overflow-hidden">
+        <div className="absolute top-0 left-0 w-full h-full bg-[url('https://www.transparenttextures.com/patterns/carbon-fibre.png')] opacity-10"></div>
+        <motion.div animate={{ opacity: [0.1, 0.3, 0.1] }} transition={{ duration: 3, repeat: Infinity }} className="absolute top-20 right-10 w-72 h-72 bg-sf-primary/10 rounded-full blur-3xl"></motion.div>
+        <motion.div animate={{ opacity: [0.1, 0.2, 0.1] }} transition={{ duration: 4, repeat: Infinity, delay: 1 }} className="absolute bottom-0 left-0 w-96 h-96 bg-teal-500/5 rounded-full blur-3xl"></motion.div>
+        
+        <div className="max-w-7xl mx-auto px-4 md:px-6 relative z-10">
+          <div className="flex flex-col gap-12 md:gap-16 items-center">
+            
+            {/* PART 1: Text and Numbers (SOPRA) */}
+            <motion.div
+              initial={{ opacity: 0, y: -20 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.8 }}
+              viewport={{ once: true }}
+              className="w-full"
+            >
+              <div className="text-center max-w-3xl mx-auto mb-12">
+                <h2 className="text-3xl md:text-4xl font-bold mb-4 md:mb-6">I Numeri di ServiceFirst</h2>
+                <p className="text-gray-400 text-base md:text-lg">
+                  Le aziende che scelgono la nostra piattaforma ottengono risultati misurabili fin dai primi mesi di utilizzo.
+                </p>
+              </div>
+              
+              {/* Numbers List - Grid on desktop for top position */}
+              <div className="grid md:grid-cols-3 gap-6 md:gap-8">
+                {/* Metric 1 */}
+                <motion.div 
+                  whileHover={{ y: -5 }}
+                  className="group cursor-default bg-gray-800/30 p-6 rounded-2xl border border-gray-700/50 hover:bg-gray-800/60 transition duration-300"
+                >
+                  <div className="flex gap-4 items-start">
+                    <div className="mt-2 bg-gradient-to-br from-green-400 to-emerald-500 p-3 rounded-xl h-fit text-white shadow-lg shadow-green-500/30">
+                      <TrendingUp size={24}/>
+                    </div>
+                    <div className="flex-1">
+                      <h4 className="text-lg font-bold mb-2 text-white group-hover:text-green-400 transition">Incremento Vendite</h4>
+                      <div className="text-4xl lg:text-5xl font-black text-green-400 drop-shadow-lg flex items-center">
+                        +<AnimatedCounter end={40} suffix="%" duration={2500} color="text-green-400" />
+                      </div>
+                      <p className="text-gray-400 text-sm mt-3">Grazie all'e-commerce integrato.</p>
+                    </div>
+                  </div>
+                </motion.div>
+
+                {/* Metric 2 */}
+                <motion.div 
+                   whileHover={{ y: -5 }}
+                   className="group cursor-default bg-gray-800/30 p-6 rounded-2xl border border-gray-700/50 hover:bg-gray-800/60 transition duration-300"
+                >
+                  <div className="flex gap-4 items-start">
+                    <div className="mt-2 bg-gradient-to-br from-orange-400 to-red-500 p-3 rounded-xl h-fit text-white shadow-lg shadow-orange-500/30">
+                      <Layers size={24}/>
+                    </div>
+                    <div className="flex-1">
+                      <h4 className="text-lg font-bold mb-2 text-white group-hover:text-orange-400 transition">Risparmio Tempo</h4>
+                      <div className="text-4xl lg:text-5xl font-black text-orange-400 drop-shadow-lg flex items-center">
+                         -<AnimatedCounter end={32} suffix="%" duration={2500} color="text-orange-400" />
+                      </div>
+                      <p className="text-gray-400 text-sm mt-3">Automatizza i processi manuali.</p>
+                    </div>
+                  </div>
+                </motion.div>
+
+                {/* Metric 3 */}
+                <motion.div 
+                   whileHover={{ y: -5 }}
+                   className="group cursor-default bg-gray-800/30 p-6 rounded-2xl border border-gray-700/50 hover:bg-gray-800/60 transition duration-300"
+                >
+                  <div className="flex gap-4 items-start">
+                    <div className="mt-2 bg-gradient-to-br from-blue-400 to-cyan-500 p-3 rounded-xl h-fit text-white shadow-lg shadow-blue-500/30">
+                      <Users size={24}/>
+                    </div>
+                    <div className="flex-1">
+                      <h4 className="text-lg font-bold mb-2 text-white group-hover:text-blue-400 transition">Fidelizzazione</h4>
+                      <div className="text-4xl lg:text-5xl font-black bg-gradient-to-r from-blue-400 to-cyan-400 bg-clip-text text-transparent drop-shadow-lg flex items-center">
+                         +<AnimatedCounter end={85} suffix="%" duration={2500} color="text-blue-400" />
+                      </div>
+                      <p className="text-gray-400 text-sm mt-3">Esperienza post-vendita moderna.</p>
+                    </div>
+                  </div>
+                </motion.div>
+              </div>
+            </motion.div>
+
+            {/* PART 2: Banner/Stats Box (SOTTO) */}
+            <motion.div 
+              initial={{ opacity: 0, scale: 0.95, y: 20 }}
+              whileInView={{ opacity: 1, scale: 1, y: 0 }}
+              transition={{ duration: 0.8, delay: 0.2 }}
+              viewport={{ once: true }}
+              className="w-full max-w-4xl relative"
+            >
+              {/* Glow Background */}
+              <motion.div animate={{ opacity: [0.3, 0.5, 0.3] }} transition={{ duration: 2, repeat: Infinity }} className="absolute inset-0 bg-gradient-to-tr from-sf-primary via-teal-400 to-cyan-300 rounded-3xl blur-3xl"></motion.div>
+              
+              {/* Main Container */}
+              <div className="bg-gradient-to-tr from-sf-primary to-teal-400 rounded-3xl p-1 shadow-2xl relative z-10 overflow-hidden">
+                {/* Inner Content */}
+                <div className="bg-gray-900 rounded-2xl p-6 md:p-10 h-full backdrop-blur-sm">
+                  <div className="flex flex-col md:flex-row items-center gap-8 justify-around">
+                    {/* Stat 1 */}
+                    <motion.div whileHover={{ scale: 1.1 }} className="text-center">
+                      <div className="text-5xl font-black text-green-400 mb-2 drop-shadow-glow">+40%</div>
+                      <div className="text-sm text-gray-300 uppercase tracking-widest font-bold bg-gray-800/50 px-4 py-1 rounded-full">Vendite Ricambi</div>
+                    </motion.div>
+
+                    <div className="hidden md:block h-20 w-px bg-gray-700"></div>
+
+                    {/* Stat 2 */}
+                    <motion.div whileHover={{ scale: 1.1 }} className="text-center">
+                      <div className="text-5xl font-black text-orange-400 mb-2 drop-shadow-glow">-32%</div>
+                      <div className="text-sm text-gray-300 uppercase tracking-widest font-bold bg-gray-800/50 px-4 py-1 rounded-full">Tempo Gestione</div>
+                    </motion.div>
+
+                     <div className="hidden md:block h-20 w-px bg-gray-700"></div>
+
+                    {/* Stat 3 */}
+                    <motion.div whileHover={{ scale: 1.1 }} className="text-center">
+                       <Sparkles className="w-10 h-10 text-blue-400 mx-auto mb-2 animate-pulse" />
+                       <div className="text-xl font-black text-white">AI Integrata</div>
+                       <div className="text-xs text-blue-400 font-bold mt-1">AUTOMAZIONE 100%</div>
+                    </motion.div>
+                  </div>
+
+                  <div className="mt-8 pt-6 border-t border-gray-700/50 text-center">
+                    <p className="text-gray-500 text-xs italic">
+                      ✓ Dati basati su studi di caso con clienti ServiceFirst nei primi 6 mesi
+                    </p>
+                  </div>
+                </div>
+              </div>
+            </motion.div>
+
+            <motion.div 
+              initial={{ opacity: 0, y: 20 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.8, delay: 0.4 }}
+              viewport={{ once: true }}
+              className="flex justify-center w-full"
+            >
+              <motion.a 
+                whileHover={{ scale: 1.05, y: -2 }}
+                whileTap={{ scale: 0.95 }}
+                href="#form" 
+                className="flex justify-center items-center gap-2 bg-sf-primary text-white px-8 py-4 rounded-xl font-bold text-lg shadow-lg shadow-sf-primary/30 hover:bg-teal-600 transition"
+              >
+                Richiedi una Demo <ArrowRight size={20} />
+              </motion.a>
+            </motion.div>
+          </div>
+        </div>
+      </section>
 
       {/* Features Section - SLIDER VELOCE E INTERATTIVA */}
       <section id="features" className="scroll-mt-32 md:scroll-mt-40 py-16 md:py-24 bg-gray-50 min-h-[850px] transition-all duration-500">
@@ -431,6 +590,18 @@ function App() {
                         className={`w-3 h-3 rounded-full transition-all duration-300 ${featurePage === idx ? 'bg-sf-primary w-6' : 'bg-gray-300'}`}
                       />
                     ))}
+                  </div>
+
+                  {/* CTA Button sotto la griglia */}
+                  <div className="mt-12 flex justify-center">
+                    <motion.a 
+                      whileHover={{ scale: 1.05, y: -2 }}
+                      whileTap={{ scale: 0.95 }}
+                      href="#form" 
+                      className="flex justify-center items-center gap-2 bg-sf-primary text-white px-8 py-4 rounded-xl font-bold text-lg shadow-lg shadow-sf-primary/30 hover:bg-teal-600 transition"
+                    >
+                      Richiedi una Demo <ArrowRight size={20} />
+                    </motion.a>
                   </div>
                 </div>
               </motion.div>
@@ -587,7 +758,7 @@ function App() {
 
                   <div className="mt-10 flex flex-col sm:flex-row gap-4">
                     <a href="#form" className="flex justify-center items-center gap-2 bg-sf-ai text-white px-8 py-4 rounded-xl font-bold text-lg shadow-lg shadow-sf-ai/30 hover:bg-[#a00fe0] transition transform hover:-translate-y-1">
-                       <FileUp size={20} /> Carica il tuo PDF
+                       Richiedi una demo
                     </a>
                   </div>
                </motion.div>
@@ -610,68 +781,12 @@ function App() {
                         className="w-full rounded-2xl shadow-inner relative z-10"
                      />
 
-                 
+                    
                   </div>
                </motion.div>
 
             </div>
          </div>
-      </section>
-
-      {/* NUOVA SEZIONE ESTENSIONI (Sostituisce i duplicati) */}
-      <section id="extensions" className="py-20 bg-white">
-        <div className="max-w-7xl mx-auto px-4 md:px-6">
-           <div className="text-center mb-16">
-              <h2 className="text-3xl md:text-4xl font-bold text-sf-dark mb-4">Espandi le Possibilità</h2>
-              <p className="text-gray-500 max-w-2xl mx-auto text-lg">
-                 ServiceFirst cresce con te. Aggiungi moduli specialistici per coprire ogni aspetto del post-vendita.
-              </p>
-           </div>
-
-           <div className="grid md:grid-cols-2 gap-10">
-              {/* CARD 1: ASSISTENZA */}
-              <motion.div 
-                 whileHover={{ y: -5 }}
-                 className="bg-gradient-to-br from-blue-50 to-white p-8 md:p-10 rounded-3xl border border-blue-100 shadow-lg flex flex-col md:flex-row gap-6 items-center md:items-start"
-              >
-                 <div className="bg-blue-100 p-4 rounded-2xl text-blue-600">
-                    <LifeBuoy size={40} />
-                 </div>
-                 <div>
-                    <h3 className="text-2xl font-bold text-sf-dark mb-3">ServiceFirst Assistenza</h3>
-                    <p className="text-gray-600 mb-6 leading-relaxed">
-                       Gestisci i ticket di assistenza e pianifica gli interventi tecnici sul campo. Collega i ricambi utilizzati direttamente all'ordine di lavoro per una tracciabilità completa.
-                    </p>
-                    <ul className="space-y-2 mb-6">
-                       <li className="flex items-center gap-2 text-sm font-medium text-gray-700"><Check size={16} className="text-blue-500"/> Ticketing System Avanzato</li>
-                       <li className="flex items-center gap-2 text-sm font-medium text-gray-700"><Check size={16} className="text-blue-500"/> Pianificazione Tecnici (Agenda)</li>
-                       <li className="flex items-center gap-2 text-sm font-medium text-gray-700"><Check size={16} className="text-blue-500"/> Rapportini di Intervento Digitali</li>
-                    </ul>
-                 </div>
-              </motion.div>
-
-              {/* CARD 2: NOLEGGI */}
-              <motion.div 
-                 whileHover={{ y: -5 }}
-                 className="bg-gradient-to-br from-orange-50 to-white p-8 md:p-10 rounded-3xl border border-orange-100 shadow-lg flex flex-col md:flex-row gap-6 items-center md:items-start"
-              >
-                 <div className="bg-orange-100 p-4 rounded-2xl text-orange-600">
-                    <CalendarDays size={40} />
-                 </div>
-                 <div>
-                    <h3 className="text-2xl font-bold text-sf-dark mb-3">ServiceFirst Noleggi</h3>
-                    <p className="text-gray-600 mb-6 leading-relaxed">
-                       Hai una flotta di macchine a noleggio? Gestisci contratti, scadenze e manutenzioni programmate in un unico posto. Non perdere mai una scadenza.
-                    </p>
-                    <ul className="space-y-2 mb-6">
-                       <li className="flex items-center gap-2 text-sm font-medium text-gray-700"><Check size={16} className="text-orange-500"/> Gestione Flotta e Contratti</li>
-                       <li className="flex items-center gap-2 text-sm font-medium text-gray-700"><Check size={16} className="text-orange-500"/> Scadenziario Manutenzioni</li>
-                       <li className="flex items-center gap-2 text-sm font-medium text-gray-700"><Check size={16} className="text-orange-500"/> Check-in / Check-out Macchine</li>
-                    </ul>
-                 </div>
-              </motion.div>
-           </div>
-        </div>
       </section>
 
       {/* SEZIONE PRICING (Piani e Funzionalità) */}
@@ -769,142 +884,6 @@ function App() {
         </div>
       </section>
 
-      {/* Why Choose Us / Stats Section - MODIFICATA */}
-      <section className="py-16 md:py-24 bg-sf-dark text-white relative overflow-hidden">
-        <div className="absolute top-0 left-0 w-full h-full bg-[url('https://www.transparenttextures.com/patterns/carbon-fibre.png')] opacity-10"></div>
-        <motion.div animate={{ opacity: [0.1, 0.3, 0.1] }} transition={{ duration: 3, repeat: Infinity }} className="absolute top-20 right-10 w-72 h-72 bg-sf-primary/10 rounded-full blur-3xl"></motion.div>
-        <motion.div animate={{ opacity: [0.1, 0.2, 0.1] }} transition={{ duration: 4, repeat: Infinity, delay: 1 }} className="absolute bottom-0 left-0 w-96 h-96 bg-teal-500/5 rounded-full blur-3xl"></motion.div>
-        
-        <div className="max-w-7xl mx-auto px-4 md:px-6 relative z-10">
-          <div className="flex flex-col gap-12 md:gap-16 items-center">
-            
-            {/* PART 1: Text and Numbers (SOPRA) */}
-            <motion.div
-              initial={{ opacity: 0, y: -20 }}
-              whileInView={{ opacity: 1, y: 0 }}
-              transition={{ duration: 0.8 }}
-              viewport={{ once: true }}
-              className="w-full"
-            >
-              <div className="text-center max-w-3xl mx-auto mb-12">
-                <h2 className="text-3xl md:text-4xl font-bold mb-4 md:mb-6">I Numeri di ServiceFirst</h2>
-                <p className="text-gray-400 text-base md:text-lg">
-                  Le aziende che scelgono la nostra piattaforma ottengono risultati misurabili fin dai primi mesi di utilizzo.
-                </p>
-              </div>
-              
-              {/* Numbers List - Grid on desktop for top position */}
-              <div className="grid md:grid-cols-3 gap-6 md:gap-8">
-                {/* Metric 1 */}
-                <motion.div 
-                  whileHover={{ y: -5 }}
-                  className="group cursor-default bg-gray-800/30 p-6 rounded-2xl border border-gray-700/50 hover:bg-gray-800/60 transition duration-300"
-                >
-                  <div className="flex gap-4 items-start">
-                    <div className="mt-2 bg-gradient-to-br from-green-400 to-emerald-500 p-3 rounded-xl h-fit text-white shadow-lg shadow-green-500/30">
-                      <TrendingUp size={24}/>
-                    </div>
-                    <div className="flex-1">
-                      <h4 className="text-lg font-bold mb-2 text-white group-hover:text-green-400 transition">Incremento Vendite</h4>
-                      <div className="text-4xl lg:text-5xl font-black text-green-400 drop-shadow-lg flex items-center">
-                        +<AnimatedCounter end={40} suffix="%" duration={2500} color="text-green-400" />
-                      </div>
-                      <p className="text-gray-400 text-sm mt-3">Grazie all'e-commerce integrato.</p>
-                    </div>
-                  </div>
-                </motion.div>
-
-                {/* Metric 2 */}
-                <motion.div 
-                   whileHover={{ y: -5 }}
-                   className="group cursor-default bg-gray-800/30 p-6 rounded-2xl border border-gray-700/50 hover:bg-gray-800/60 transition duration-300"
-                >
-                  <div className="flex gap-4 items-start">
-                    <div className="mt-2 bg-gradient-to-br from-orange-400 to-red-500 p-3 rounded-xl h-fit text-white shadow-lg shadow-orange-500/30">
-                      <Layers size={24}/>
-                    </div>
-                    <div className="flex-1">
-                      <h4 className="text-lg font-bold mb-2 text-white group-hover:text-orange-400 transition">Risparmio Tempo</h4>
-                      <div className="text-4xl lg:text-5xl font-black text-orange-400 drop-shadow-lg flex items-center">
-                         -<AnimatedCounter end={32} suffix="%" duration={2500} color="text-orange-400" />
-                      </div>
-                      <p className="text-gray-400 text-sm mt-3">Automatizza i processi manuali.</p>
-                    </div>
-                  </div>
-                </motion.div>
-
-                {/* Metric 3 */}
-                <motion.div 
-                   whileHover={{ y: -5 }}
-                   className="group cursor-default bg-gray-800/30 p-6 rounded-2xl border border-gray-700/50 hover:bg-gray-800/60 transition duration-300"
-                >
-                  <div className="flex gap-4 items-start">
-                    <div className="mt-2 bg-gradient-to-br from-blue-400 to-cyan-500 p-3 rounded-xl h-fit text-white shadow-lg shadow-blue-500/30">
-                      <Users size={24}/>
-                    </div>
-                    <div className="flex-1">
-                      <h4 className="text-lg font-bold mb-2 text-white group-hover:text-blue-400 transition">Fidelizzazione</h4>
-                      <div className="text-4xl lg:text-5xl font-black bg-gradient-to-r from-blue-400 to-cyan-400 bg-clip-text text-transparent drop-shadow-lg flex items-center">
-                         +<AnimatedCounter end={85} suffix="%" duration={2500} color="text-blue-400" />
-                      </div>
-                      <p className="text-gray-400 text-sm mt-3">Esperienza post-vendita moderna.</p>
-                    </div>
-                  </div>
-                </motion.div>
-              </div>
-            </motion.div>
-
-            {/* PART 2: Banner/Stats Box (SOTTO) */}
-            <motion.div 
-              initial={{ opacity: 0, scale: 0.95, y: 20 }}
-              whileInView={{ opacity: 1, scale: 1, y: 0 }}
-              transition={{ duration: 0.8, delay: 0.2 }}
-              viewport={{ once: true }}
-              className="w-full max-w-4xl relative"
-            >
-              {/* Glow Background */}
-              <motion.div animate={{ opacity: [0.3, 0.5, 0.3] }} transition={{ duration: 2, repeat: Infinity }} className="absolute inset-0 bg-gradient-to-tr from-sf-primary via-teal-400 to-cyan-300 rounded-3xl blur-3xl"></motion.div>
-              
-              {/* Main Container */}
-              <div className="bg-gradient-to-tr from-sf-primary to-teal-400 rounded-3xl p-1 shadow-2xl relative z-10 overflow-hidden">
-                {/* Inner Content */}
-                <div className="bg-gray-900 rounded-2xl p-6 md:p-10 h-full backdrop-blur-sm">
-                  <div className="flex flex-col md:flex-row items-center gap-8 justify-around">
-                    {/* Stat 1 */}
-                    <motion.div whileHover={{ scale: 1.1 }} className="text-center">
-                      <div className="text-5xl font-black text-green-400 mb-2 drop-shadow-glow">+40%</div>
-                      <div className="text-sm text-gray-300 uppercase tracking-widest font-bold bg-gray-800/50 px-4 py-1 rounded-full">Vendite Ricambi</div>
-                    </motion.div>
-
-                    <div className="hidden md:block h-20 w-px bg-gray-700"></div>
-
-                    {/* Stat 2 */}
-                    <motion.div whileHover={{ scale: 1.1 }} className="text-center">
-                      <div className="text-5xl font-black text-orange-400 mb-2 drop-shadow-glow">-32%</div>
-                      <div className="text-sm text-gray-300 uppercase tracking-widest font-bold bg-gray-800/50 px-4 py-1 rounded-full">Tempo Gestione</div>
-                    </motion.div>
-
-                     <div className="hidden md:block h-20 w-px bg-gray-700"></div>
-
-                    {/* Stat 3 */}
-                    <motion.div whileHover={{ scale: 1.1 }} className="text-center">
-                       <Sparkles className="w-10 h-10 text-blue-400 mx-auto mb-2 animate-pulse" />
-                       <div className="text-xl font-black text-white">AI Integrata</div>
-                       <div className="text-xs text-blue-400 font-bold mt-1">AUTOMAZIONE 100%</div>
-                    </motion.div>
-                  </div>
-
-                  <div className="mt-8 pt-6 border-t border-gray-700/50 text-center">
-                    <p className="text-gray-500 text-xs italic">
-                      ✓ Dati basati su studi di caso con clienti ServiceFirst nei primi 6 mesi
-                    </p>
-                  </div>
-                </div>
-              </div>
-            </motion.div>
-          </div>
-        </div>
-      </section>
 
       {/* CTA / Form Section - MIGLIORATO (Campi, Animazioni, Stili) */}
       <section id="form" className="scroll-mt-32 md:scroll-mt-40 py-16 md:py-24 bg-sf-light relative">

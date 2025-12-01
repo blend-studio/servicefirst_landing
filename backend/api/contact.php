@@ -5,8 +5,14 @@
 ob_start();
 
 // 2. HEADERS CORS "BRUTE FORCE" (Senza condizioni)
-// Mettiamo l'indirizzo esatto del tuo frontend. Niente wildcard (*), niente controlli isset.
-header("Access-Control-Allow-Origin: http://localhost:5173");
+// Gestione dinamica dell'origine per supportare sia localhost che 127.0.0.1
+$http_origin = $_SERVER['HTTP_ORIGIN'] ?? 'http://localhost:5173';
+if (in_array($http_origin, ['http://localhost:5173', 'http://127.0.0.1:5173'])) {
+    header("Access-Control-Allow-Origin: $http_origin");
+} else {
+    header("Access-Control-Allow-Origin: http://localhost:5173");
+}
+
 header("Access-Control-Allow-Credentials: true");
 header("Access-Control-Allow-Methods: GET, POST, OPTIONS");
 header("Access-Control-Allow-Headers: Content-Type, Authorization, X-Requested-With");
