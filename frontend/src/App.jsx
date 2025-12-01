@@ -104,6 +104,16 @@ function App() {
   const [selectedFeature, setSelectedFeature] = useState(null);
   const [featurePage, setFeaturePage] = useState(0);
   const [slideDirection, setSlideDirection] = useState(0);
+
+  // SCROLL AUTOMATICO ALL'APERTURA DEL DETTAGLIO
+  useEffect(() => {
+    if (selectedFeature) {
+      const element = document.getElementById('features');
+      if (element) {
+        element.scrollIntoView({ behavior: 'smooth', block: 'start' });
+      }
+    }
+  }, [selectedFeature]);
   
   const ITEMS_PER_PAGE = 6;
 
