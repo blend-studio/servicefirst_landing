@@ -104,6 +104,26 @@ function App() {
   const [selectedFeature, setSelectedFeature] = useState(null);
   const [featurePage, setFeaturePage] = useState(0);
   const [slideDirection, setSlideDirection] = useState(0);
+  const [isMobile, setIsMobile] = useState(window.innerWidth < 768);
+  const [isTablet, setIsTablet] = useState(window.innerWidth >= 768 && window.innerWidth < 1024);
+  const [pricingPage, setPricingPage] = useState(0); // NUOVO STATE PER PRICING
+
+  useEffect(() => {
+    const handleResize = () => {
+      const width = window.innerWidth;
+      const mobile = width < 768;
+      const tablet = width >= 768 && width < 1024;
+      
+      if (mobile !== isMobile || tablet !== isTablet) {
+        setIsMobile(mobile);
+        setIsTablet(tablet);
+        setFeaturePage(0);
+        setPricingPage(0); // Reset pricing page
+      }
+    };
+    window.addEventListener('resize', handleResize);
+    return () => window.removeEventListener('resize', handleResize);
+  }, [isMobile, isTablet]);
 
   // SCROLL AUTOMATICO ALL'APERTURA DEL DETTAGLIO
   useEffect(() => {
@@ -115,7 +135,7 @@ function App() {
     }
   }, [selectedFeature]);
   
-  const ITEMS_PER_PAGE = 6;
+  const ITEMS_PER_PAGE = isMobile ? 1 : (isTablet ? 4 : 6);
 
   const handleChange = (e) => {
     const value = e.target.type === 'checkbox' ? e.target.checked : e.target.value;
@@ -210,6 +230,15 @@ function App() {
     }
   ];
 
+  const paginatePricing = (newDirection) => {
+    setPricingPage((prev) => {
+      const nextPage = prev + newDirection;
+      if (nextPage < 0) return plans.length - 1;
+      if (nextPage >= plans.length) return 0;
+      return nextPage;
+    });
+  };
+
   // --- FEATURES (12 Card totali - rimosse alcune, aggiunte altre) ---
   const features = [
     { id: 1, icon: <Zap size={32} />, title: "Creazione con AI", desc: "Genera cataloghi multilingua in un click grazie all'Intelligenza Artificiale.", details: "Il nostro motore AI analizza i tuoi PDF tecnici, riconosce i codici e crea automaticamente le associazioni con la distinta base. Risparmia fino al 90% del tempo di data-entry manuale.", benefits: ["Riconoscimento automatico", "Importazione massiva", "Zero errori umani"] },
@@ -261,22 +290,22 @@ function App() {
 
       {/* Hero Section */}
       <header className="pt-36 md:pt-48 pb-12 md:pb-20 px-4 md:px-6 bg-gradient-to-b from-gray-50 to-white relative overflow-hidden">
-        <div className="max-w-7xl mx-auto grid md:grid-cols-2 gap-10 md:gap-16 items-center relative z-10">
+        <div className="max-w-7xl mx-auto grid xl:grid-cols-2 gap-10 md:gap-16 items-center relative z-10">
           <motion.div 
             variants={staggerContainer}
             initial="hidden"
             animate="visible"
-            className="text-center md:text-left"
+            className="text-center xl:text-left"
           >
            
-            <motion.h1 variants={fadeInUp} className="text-4xl md:text-5xl lg:text-6xl font-extrabold text-sf-dark mb-4 md:mb-6 leading-tight">
+            <motion.h1 variants={fadeInUp} className="text-3xl md:text-5xl lg:text-6xl font-extrabold text-sf-dark mb-4 md:mb-6 leading-tight">
               Il tuo catalogo <br/>
               <span className="text-sf-primary">ricambi interattivo</span>
             </motion.h1>
             <motion.p variants={fadeInUp} className="text-lg md:text-xl text-gray-600 mb-6 md:mb-8 leading-relaxed">
               Crea e trasforma i tuoi cataloghi ricambi in un portale e-commerce B2B. Vendi i tuoi ricambi e potenzia il tuo business. Basta un click con l’intelligenza artificiale.
             </motion.p>
-            <motion.div variants={fadeInUp} className="flex flex-col sm:flex-row gap-3 md:gap-4 justify-center md:justify-start">
+            <motion.div variants={fadeInUp} className="flex flex-col sm:flex-row gap-3 md:gap-4 justify-center xl:justify-start">
               <motion.a 
                 whileHover={{ scale: 1.05, y: -2 }}
                 whileTap={{ scale: 0.95 }}
@@ -300,7 +329,7 @@ function App() {
             initial={{ opacity: 0, x: 50, rotate: 5 }}
             animate={{ opacity: 1, x: 0, rotate: 0 }}
             transition={{ duration: 1, type: "spring", bounce: 0.4, delay: 0.2 }}
-            className="relative mt-8 md:mt-0 perspective-1000"
+            className="relative mt-8 xl:mt-0 perspective-1000"
           >
             {/* Floating animation per l'immagine Hero */}
             <motion.div 
@@ -349,7 +378,7 @@ function App() {
       </div>
 
       {/* Why Choose Us / Stats Section - MODIFICATA */}
-      <section className="py-16 md:py-24 bg-sf-dark text-white relative overflow-hidden">
+      <section className="py-12 md:py-24 bg-sf-dark text-white relative overflow-hidden">
         <div className="absolute top-0 left-0 w-full h-full bg-[url('https://www.transparenttextures.com/patterns/carbon-fibre.png')] opacity-10"></div>
         <motion.div animate={{ opacity: [0.1, 0.3, 0.1] }} transition={{ duration: 3, repeat: Infinity }} className="absolute top-20 right-10 w-72 h-72 bg-sf-primary/10 rounded-full blur-3xl"></motion.div>
         <motion.div animate={{ opacity: [0.1, 0.2, 0.1] }} transition={{ duration: 4, repeat: Infinity, delay: 1 }} className="absolute bottom-0 left-0 w-96 h-96 bg-teal-500/5 rounded-full blur-3xl"></motion.div>
@@ -503,7 +532,7 @@ function App() {
       </section>
 
       {/* Features Section - SLIDER VELOCE E INTERATTIVA */}
-      <section id="features" className="scroll-mt-32 md:scroll-mt-40 py-16 md:py-24 bg-gray-50 min-h-[850px] transition-all duration-500">
+      <section id="features" className="scroll-mt-32 md:scroll-mt-40 py-8 md:py-24 bg-gray-50 min-h-auto md:min-h-[850px] transition-all duration-500">
         <div className="max-w-7xl mx-auto px-4 md:px-6">
           
           <AnimatePresence mode="wait">
@@ -522,37 +551,38 @@ function App() {
                     viewport={{ once: true }}
                     className="text-3xl md:text-4xl font-bold text-sf-dark mb-3 md:mb-4"
                   >
-                    Funzionalità Principali
+                    Cosa ti offre ServiceFirst
                   </motion.h2>
                   <p className="text-gray-500 max-w-2xl mx-auto text-sm md:text-base">
-                    Una piattaforma completa. Clicca sulle card per approfondire.
+                    Una piattaforma completa per <strong>gestire e ottimizzare i servizi</strong>. Clicca sulle card per approfondire.
                   </p>
                 </div>
                 
                 {/* CONTAINER DELLO SLIDER */}
-                <div className="relative px-4 md:px-12">
+                <div className="px-0 md:px-12">
+                  <div className="relative">
                   {/* Pulsante Precedente */}
-                  <div className="absolute top-1/2 left-0 md:-left-8 transform -translate-y-1/2 z-10">
+                  <div className="absolute top-1/2 left-1 md:-left-12 lg:-left-16 transform -translate-y-1/2 z-10">
                     <button 
                       onClick={() => paginate(-1)}
-                      className="bg-white p-3 rounded-full shadow-lg border border-gray-100 text-sf-dark hover:text-sf-primary hover:scale-110 transition"
+                      className="bg-white/90 backdrop-blur-sm p-2 md:p-3 rounded-full shadow-lg border border-gray-100 text-sf-dark hover:text-sf-primary hover:scale-110 transition"
                     >
-                      <ChevronLeft size={24} />
+                      <ChevronLeft size={20} className="md:w-6 md:h-6" />
                     </button>
                   </div>
 
                   {/* Pulsante Successivo */}
-                  <div className="absolute top-1/2 right-0 md:-right-8 transform -translate-y-1/2 z-10">
+                  <div className="absolute top-1/2 right-1 md:-right-12 lg:-right-16 transform -translate-y-1/2 z-10">
                     <button 
                       onClick={() => paginate(1)}
-                      className="bg-white p-3 rounded-full shadow-lg border border-gray-100 text-sf-dark hover:text-sf-primary hover:scale-110 transition"
+                      className="bg-white/90 backdrop-blur-sm p-2 md:p-3 rounded-full shadow-lg border border-gray-100 text-sf-dark hover:text-sf-primary hover:scale-110 transition"
                     >
-                      <ChevronRight size={24} />
+                      <ChevronRight size={20} className="md:w-6 md:h-6" />
                     </button>
                   </div>
 
                   {/* Griglia Animata */}
-                  <div className="overflow-hidden min-h-[500px] py-4">
+                  <div className="overflow-hidden min-h-[250px] md:min-h-[500px] py-2 md:py-4 flex items-center justify-center">
                     <AnimatePresence initial={false} custom={slideDirection} mode="wait">
                       <motion.div
                         key={featurePage}
@@ -565,7 +595,7 @@ function App() {
                           x: { type: "tween", ease: "easeInOut", duration: 0.25 }, // VELOCIZZATO
                           opacity: { duration: 0.2 }
                         }}
-                        className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 md:gap-8"
+                        className={`${isMobile ? 'w-full flex justify-center items-center' : 'grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 md:gap-8 w-full'}`}
                       >
                         {currentFeatures.map((feat) => (
                           <motion.div 
@@ -573,7 +603,7 @@ function App() {
                             layoutId={`card-${feat.id}`}
                             onClick={() => setSelectedFeature(feat)}
                             whileHover={{ y: -10, boxShadow: "0 20px 40px -10px rgba(0,0,0,0.15)" }}
-                            className="group p-6 md:p-8 bg-white rounded-2xl border border-gray-100 transition duration-300 cursor-pointer h-full flex flex-col items-start min-h-[250px]"
+                            className={`group p-6 md:p-8 bg-white rounded-2xl border border-gray-100 transition duration-300 cursor-pointer h-full flex flex-col justify-center items-center text-center md:justify-start md:items-start md:text-left min-h-[220px] md:min-h-[250px] ${isMobile ? 'w-[75%] mx-auto shadow-lg' : 'w-full'}`}
                           >
                             <motion.div 
                               layoutId={`icon-${feat.id}`}
@@ -583,7 +613,7 @@ function App() {
                             </motion.div>
                             <motion.h3 layoutId={`title-${feat.id}`} className="text-lg md:text-xl font-bold text-sf-dark mb-2 group-hover:text-sf-primary transition">{feat.title}</motion.h3>
                             <motion.p className="text-gray-600 text-sm leading-relaxed mb-4 flex-grow">{feat.desc}</motion.p>
-                            <div className="text-sf-primary font-bold text-sm flex items-center gap-2 opacity-0 group-hover:opacity-100 transition-opacity mt-auto">
+                            <div className="text-sf-primary font-bold text-sm flex items-center gap-2 opacity-100 lg:opacity-0 lg:group-hover:opacity-100 transition-opacity mt-auto">
                               Scopri di più <ArrowRight size={16} />
                             </div>
                           </motion.div>
@@ -591,9 +621,10 @@ function App() {
                       </motion.div>
                     </AnimatePresence>
                   </div>
+                  </div>
 
                   {/* Indicatori Paginazione (Pallini) */}
-                  <div className="flex justify-center gap-2 mt-8">
+                  <div className="flex justify-center gap-2 mt-4 md:mt-8">
                     {Array.from({ length: Math.ceil(features.length / ITEMS_PER_PAGE) }).map((_, idx) => (
                       <div 
                         key={idx}
@@ -603,7 +634,7 @@ function App() {
                   </div>
 
                   {/* CTA Button sotto la griglia */}
-                  <div className="mt-12 flex justify-center">
+                  <div className="mt-6 md:mt-12 flex justify-center">
                     <motion.a 
                       whileHover={{ scale: 1.05, y: -2 }}
                       whileTap={{ scale: 0.95 }}
@@ -629,7 +660,7 @@ function App() {
                 {/* Colonna Sinistra: Card Selezionata (Espansa Visivamente) */}
                 <motion.div 
                   layoutId={`card-${selectedFeature.id}`}
-                  className="bg-white p-8 md:p-12 rounded-3xl border-2 border-sf-primary/20 shadow-2xl relative overflow-hidden"
+                  className="bg-white p-6 md:p-12 rounded-3xl border-2 border-sf-primary/20 shadow-2xl relative overflow-hidden"
                 >
                   <div className="absolute top-0 right-0 p-4">
                     <button 
@@ -713,7 +744,7 @@ function App() {
       </section>
 
       {/* SEZIONE INTELLIGENZA ARTIFICIALE */}
-      <section id="ia" className="py-20 bg-[#1a1a1a] text-white relative overflow-hidden">
+      <section id="ia" className="py-12 md:py-20 bg-[#1a1a1a] text-white relative overflow-hidden">
          <div className="absolute top-0 right-0 w-[500px] h-[500px] bg-sf-ai/20 rounded-full blur-[120px] pointer-events-none"></div>
          <div className="absolute bottom-0 left-0 w-[400px] h-[400px] bg-sf-primary/10 rounded-full blur-[100px] pointer-events-none"></div>
 
@@ -731,7 +762,7 @@ function App() {
                     <Bot size={16} /> Intelligenza Artificiale
                   </div>
                   
-                  <h2 className="text-4xl md:text-5xl font-extrabold mb-6 leading-tight">
+                  <h2 className="text-3xl md:text-5xl font-extrabold mb-6 leading-tight">
                     Cataloghi digitali interattivi <span className="text-transparent bg-clip-text bg-gradient-to-r from-sf-ai to-purple-300">in un istante!</span>
                   </h2>
                   
@@ -766,7 +797,7 @@ function App() {
                      </div>
                   </div>
 
-                  <div className="mt-10 flex flex-col sm:flex-row gap-4">
+                  <div className="mt-10 flex flex-col sm:flex-row gap-4 md:justify-center lg:justify-start">
                     <a href="#form" className="flex justify-center items-center gap-2 bg-sf-ai text-white px-8 py-4 rounded-xl font-bold text-lg shadow-lg shadow-sf-ai/30 hover:bg-[#a00fe0] transition transform hover:-translate-y-1">
                        Richiedi una demo
                     </a>
@@ -779,7 +810,7 @@ function App() {
                  whileInView={{ opacity: 1, scale: 1 }}
                  transition={{ duration: 0.8 }}
                  viewport={{ once: true }}
-                 className="relative"
+                 className="relative md:w-[75%] md:mx-auto lg:w-full"
                >
                   <div className="bg-gradient-to-br from-gray-800 to-gray-900 rounded-3xl p-2 border border-gray-700 shadow-2xl relative overflow-hidden group">
                      <div className="absolute inset-0 bg-[url('https://www.transparenttextures.com/patterns/circuit-board.png')] opacity-10"></div>
@@ -800,7 +831,7 @@ function App() {
       </section>
 
       {/* SEZIONE PRICING (Piani e Funzionalità) */}
-      <section id="pricing" className="py-20 bg-gradient-to-b from-teal-600 to-teal-700 relative overflow-hidden">
+      <section id="pricing" className="py-12 md:py-20 bg-gradient-to-b from-teal-600 to-teal-700 relative overflow-hidden">
         {/* ... (CONTENUTO IDENTICO A PRIMA) ... */}
         <div className="absolute inset-0 opacity-10 bg-[radial-gradient(#ffffff_1px,transparent_1px)] [background-size:20px_20px]"></div>
         
@@ -811,7 +842,7 @@ function App() {
             viewport={{ once: true }}
             className="text-center mb-16"
           >
-            <h2 className="text-4xl md:text-5xl font-extrabold text-white mb-4 tracking-tight">PIANI E FUNZIONALITÀ</h2>
+            <h2 className="text-3xl md:text-5xl font-extrabold text-white mb-4 tracking-tight">PIANI E FUNZIONALITÀ</h2>
             <p className="text-teal-100 text-lg max-w-2xl mx-auto opacity-90">
               Scegli la soluzione perfetta per il tuo business. Scalabile, trasparente e completa.
             </p>
@@ -822,14 +853,35 @@ function App() {
             initial="hidden"
             whileInView="visible"
             viewport={{ once: true }}
-            className="grid md:grid-cols-3 gap-8 items-start"
+            className="relative px-0 md:px-4"
           >
-            {plans.map((plan, index) => (
+            {/* Mobile Navigation Buttons */}
+            {(isMobile || isTablet) && (
+              <>
+                <button 
+                  onClick={() => paginatePricing(-1)}
+                  className="absolute top-1/2 left-0 md:left-8 z-20 bg-white shadow-xl p-2 rounded-full text-sf-primary hover:bg-gray-50 transition transform -translate-y-1/2 border border-gray-100"
+                >
+                  <ChevronLeft size={24} />
+                </button>
+                <button 
+                  onClick={() => paginatePricing(1)}
+                  className="absolute top-1/2 right-0 md:right-8 z-20 bg-white shadow-xl p-2 rounded-full text-sf-primary hover:bg-gray-50 transition transform -translate-y-1/2 border border-gray-100"
+                >
+                  <ChevronRight size={24} />
+                </button>
+              </>
+            )}
+
+            <div className={`grid ${(isMobile || isTablet) ? 'grid-cols-1 place-items-center' : 'md:grid-cols-3 gap-8'} items-start`}>
+            {((isMobile || isTablet) ? [plans[pricingPage]] : plans).map((plan, index) => (
               <motion.div 
-                key={index}
-                variants={fadeInUp}
+                key={(isMobile || isTablet) ? plan.name : index} // Use name as key for mobile to force re-render/animation
+                initial={(isMobile || isTablet) ? { opacity: 0, x: 20 } : { opacity: 0, y: 20 }}
+                animate={(isMobile || isTablet) ? { opacity: 1, x: 0 } : { opacity: 1, y: 0 }}
+                transition={{ duration: 0.3 }}
                 whileHover={{ y: -10 }}
-                className={`relative bg-white rounded-2xl overflow-hidden shadow-2xl flex flex-col ${plan.highlight ? 'md:-mt-4 md:mb-4 z-10 border-4 border-yellow-400' : 'border border-gray-100'}`}
+                className={`relative bg-white rounded-2xl overflow-hidden shadow-2xl flex flex-col ${plan.highlight ? 'md:-mt-4 md:mb-4 z-10 border-4 border-yellow-400' : 'border border-gray-100'} ${isMobile ? 'w-[70%] mx-auto' : (isTablet ? 'w-full max-w-lg mx-auto' : 'w-full')}`}
               >
                 <div className={`py-2 px-4 text-center text-xs font-bold tracking-widest uppercase ${plan.highlight ? 'bg-yellow-400 text-sf-dark' : 'bg-gray-100 text-gray-500'}`}>
                   {plan.tag}
@@ -890,13 +942,26 @@ function App() {
                 </div>
               </motion.div>
             ))}
+            </div>
+
+            {/* Mobile Dots */}
+            {(isMobile || isTablet) && (
+               <div className="flex justify-center gap-2 mt-6">
+                 {plans.map((_, idx) => (
+                   <div 
+                     key={idx}
+                     className={`w-2 h-2 rounded-full transition-all ${idx === pricingPage ? 'bg-white w-4' : 'bg-white/40'}`}
+                   />
+                 ))}
+               </div>
+            )}
           </motion.div>
         </div>
       </section>
 
 
       {/* CTA / Form Section - MIGLIORATO (Campi, Animazioni, Stili) */}
-      <section id="form" className="scroll-mt-32 md:scroll-mt-40 py-16 md:py-24 bg-sf-light relative">
+      <section id="form" className="scroll-mt-32 md:scroll-mt-40 py-12 md:py-24 bg-sf-light relative">
         <div className="max-w-6xl mx-auto px-4 md:px-6">
           <motion.div 
             initial={{ y: 50, opacity: 0 }}
@@ -905,13 +970,13 @@ function App() {
             className="bg-white rounded-3xl shadow-2xl overflow-hidden flex flex-col md:flex-row border border-gray-100"
           >
             {/* Left Side: Information */}
-            <div className="md:w-5/12 p-8 md:p-12 bg-gradient-to-br from-sf-primary to-teal-700 text-white flex flex-col justify-center relative overflow-hidden">
+            <div className="md:w-5/12 p-6 md:p-12 bg-gradient-to-br from-sf-primary to-teal-700 text-white flex flex-col justify-center relative overflow-hidden">
               <motion.div animate={{ scale: [1, 1.2, 1] }} transition={{ duration: 5, repeat: Infinity }} className="absolute -right-20 -bottom-20 w-64 h-64 bg-white/10 rounded-full blur-3xl"></motion.div>
               
               <div className="relative z-10">
                 <h3 className="text-3xl md:text-4xl font-bold mb-4">Richiedi una Demo</h3>
                 <p className="mb-8 opacity-90 text-base md:text-lg leading-relaxed">
-                  Scopri come ServiceFirst può rivoluzionare il tuo service. Compila il modulo per una consulenza personalizzata.
+                  Scopri come il catalogo ServiceFirst può rivoluzionare il tuo service. Compila il modulo per una consulenza personalizzata.
                 </p>
                 
                 <ul className="space-y-4">
@@ -929,7 +994,7 @@ function App() {
             </div>
             
             {/* Right Side: The Form */}
-            <div className="md:w-7/12 p-8 md:p-12 bg-white">
+            <div className="md:w-7/12 p-6 md:p-12 bg-white">
               {status === 'success' ? (
                 <motion.div 
                   initial={{ opacity: 0, scale: 0.9 }}
