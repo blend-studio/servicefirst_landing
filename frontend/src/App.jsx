@@ -1053,22 +1053,22 @@ function App() {
 
           <div className="relative px-10 md:px-14 lg:px-12">
              {/* Pulsante Precedente */}
-             <div className="absolute top-1/2 left-1 md:left-2 lg:-left-8 transform -translate-y-1/2 z-10">
+             <div className="absolute top-1/2 left-0 md:left-2 lg:-left-8 transform -translate-y-1/2 z-10">
                 <button 
                   onClick={() => paginateTestimonials(-1)}
-                  className="bg-white/90 backdrop-blur-sm p-2 md:p-3 rounded-full shadow-lg border border-gray-100 text-sf-dark hover:text-sf-primary hover:scale-110 transition"
+                  className="bg-white/90 backdrop-blur-sm p-1.5 md:p-3 rounded-full shadow-lg border border-gray-100 text-sf-dark hover:text-sf-primary hover:scale-110 transition"
                 >
-                  <ChevronLeft size={20} className="md:w-6 md:h-6" />
+                  <ChevronLeft size={18} className="md:w-6 md:h-6" />
                 </button>
              </div>
 
              {/* Pulsante Successivo */}
-             <div className="absolute top-1/2 right-1 md:right-2 lg:-right-8 transform -translate-y-1/2 z-10">
+             <div className="absolute top-1/2 right-0 md:right-2 lg:-right-8 transform -translate-y-1/2 z-10">
                 <button 
                   onClick={() => paginateTestimonials(1)}
-                  className="bg-white/90 backdrop-blur-sm p-2 md:p-3 rounded-full shadow-lg border border-gray-100 text-sf-dark hover:text-sf-primary hover:scale-110 transition"
+                  className="bg-white/90 backdrop-blur-sm p-1.5 md:p-3 rounded-full shadow-lg border border-gray-100 text-sf-dark hover:text-sf-primary hover:scale-110 transition"
                 >
-                  <ChevronRight size={20} className="md:w-6 md:h-6" />
+                  <ChevronRight size={18} className="md:w-6 md:h-6" />
                 </button>
              </div>
 
@@ -1091,7 +1091,7 @@ function App() {
                          <motion.div 
                             key={index}
                             whileHover={{ y: -5 }}
-                            className={`bg-white border border-gray-100 p-6 md:p-8 rounded-2xl shadow-lg hover:shadow-xl transition-all duration-300 flex flex-col h-full min-h-[280px] md:min-h-[300px] ${isMobile ? 'w-[85%] mx-auto' : 'w-full'}`}
+                            className={`bg-white border border-gray-100 p-6 md:p-8 rounded-2xl shadow-lg hover:shadow-xl transition-all duration-300 flex flex-col h-full min-h-[280px] md:min-h-[300px] ${isMobile ? 'w-full mx-auto' : 'w-full'}`}
                          >
                             <Quote className="text-sf-primary/20 mb-6 w-10 h-10 fill-current" />
                             
