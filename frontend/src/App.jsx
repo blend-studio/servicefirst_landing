@@ -357,8 +357,8 @@ function App() {
           >
             Richiedi Demo <ArrowRight size={18} />
           </motion.a>
-          <a href="#form" className="md:hidden bg-sf-primary text-white p-2 rounded-md">
-            <ArrowRight size={20} />
+          <a href="#form" className="md:hidden bg-sf-primary text-white px-4 py-2 rounded-md font-semibold text-sm flex items-center gap-1">
+            Richiedi Demo <ArrowRight size={16} />
           </a>
         </div>
       </motion.nav>
@@ -935,15 +935,15 @@ function App() {
               <>
                 <button 
                   onClick={() => paginatePricing(-1)}
-                  className="absolute top-1/2 left-0 md:left-8 z-20 bg-white shadow-xl p-2 rounded-full text-sf-primary hover:bg-gray-50 transition transform -translate-y-1/2 border border-gray-100"
+                  className="absolute top-1/2 -left-3 md:left-8 z-20 bg-white shadow-xl p-1.5 md:p-2 rounded-full text-sf-primary hover:bg-gray-50 transition transform -translate-y-1/2 border border-gray-100"
                 >
-                  <ChevronLeft size={24} />
+                  <ChevronLeft size={18} className="md:w-6 md:h-6" />
                 </button>
                 <button 
                   onClick={() => paginatePricing(1)}
-                  className="absolute top-1/2 right-0 md:right-8 z-20 bg-white shadow-xl p-2 rounded-full text-sf-primary hover:bg-gray-50 transition transform -translate-y-1/2 border border-gray-100"
+                  className="absolute top-1/2 -right-3 md:right-8 z-20 bg-white shadow-xl p-1.5 md:p-2 rounded-full text-sf-primary hover:bg-gray-50 transition transform -translate-y-1/2 border border-gray-100"
                 >
-                  <ChevronRight size={24} />
+                  <ChevronRight size={18} className="md:w-6 md:h-6" />
                 </button>
               </>
             )}
@@ -956,7 +956,7 @@ function App() {
                 animate={(isMobile || isTablet) ? { opacity: 1, x: 0 } : { opacity: 1, y: 0 }}
                 transition={{ duration: 0.3 }}
                 whileHover={{ y: -10 }}
-                className={`relative bg-white rounded-2xl overflow-hidden shadow-2xl flex flex-col ${plan.highlight ? 'md:-mt-4 md:mb-4 z-10 border-4 border-yellow-400' : 'border border-gray-100'} ${isMobile ? 'w-[70%] mx-auto' : (isTablet ? 'w-full max-w-lg mx-auto' : 'w-full')}`}
+                className={`relative bg-white rounded-2xl overflow-hidden shadow-2xl flex flex-col ${plan.highlight ? 'md:-mt-4 md:mb-4 z-10 border-4 border-yellow-400' : 'border border-gray-100'} ${isMobile ? 'w-[85%] mx-auto' : (isTablet ? 'w-full max-w-lg mx-auto' : 'w-full')}`}
               >
                 <div className={`py-2 px-4 text-center text-xs font-bold tracking-widest uppercase ${plan.highlight ? 'bg-yellow-400 text-sf-dark' : 'bg-gray-100 text-gray-500'}`}>
                   {plan.tag}
