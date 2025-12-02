@@ -667,7 +667,7 @@ function App() {
                             </motion.div>
                             <motion.h3 layoutId={`title-${feat.id}`} className="text-lg md:text-xl font-bold text-sf-dark mb-2 group-hover:text-sf-primary transition">{feat.title}</motion.h3>
                             <motion.p className="text-gray-600 text-sm leading-relaxed mb-4 flex-grow">{feat.desc}</motion.p>
-                            <div className="text-sf-primary font-bold text-sm flex items-center gap-2 opacity-100 lg:opacity-0 lg:group-hover:opacity-100 transition-opacity mt-auto">
+                            <div className="text-sf-primary font-bold text-sm flex items-center gap-2 transition-opacity mt-auto">
                               Scopri di più <ArrowRight size={16} />
                             </div>
                           </motion.div>
