@@ -1051,9 +1051,9 @@ function App() {
             </h2>
           </motion.div>
 
-          <div className="relative px-10 md:px-14 lg:px-12">
+          <div className="relative px-10 md:px-14 lg:px-16">
              {/* Pulsante Precedente */}
-             <div className="absolute top-1/2 left-0 md:left-2 lg:-left-8 transform -translate-y-1/2 z-10">
+             <div className="absolute top-1/2 left-0 md:left-2 lg:-left-4 transform -translate-y-1/2 z-10">
                 <button 
                   onClick={() => paginateTestimonials(-1)}
                   className="bg-white/90 backdrop-blur-sm p-1.5 md:p-3 rounded-full shadow-lg border border-gray-100 text-sf-dark hover:text-sf-primary hover:scale-110 transition"
@@ -1063,7 +1063,7 @@ function App() {
              </div>
 
              {/* Pulsante Successivo */}
-             <div className="absolute top-1/2 right-0 md:right-2 lg:-right-8 transform -translate-y-1/2 z-10">
+             <div className="absolute top-1/2 right-0 md:right-2 lg:-right-4 transform -translate-y-1/2 z-10">
                 <button 
                   onClick={() => paginateTestimonials(1)}
                   className="bg-white/90 backdrop-blur-sm p-1.5 md:p-3 rounded-full shadow-lg border border-gray-100 text-sf-dark hover:text-sf-primary hover:scale-110 transition"
