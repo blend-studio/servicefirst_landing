@@ -17,6 +17,20 @@ import energreenLogo from './assets/img/loghi aggiunti/energreen service first.p
 import geetitLogo from './assets/img/loghi aggiunti/geetit-service first.png';
 import fiveLogo from './assets/img/loghi aggiunti/LOGO_FIVE_1.png';
 import zoomlionLogo from './assets/img/loghi aggiunti/zoomlion-servicefirst.png';
+import casaliniLogo from './assets/img/loghi aggiunti/Casalini.webp';
+import comexiLogo from './assets/img/loghi aggiunti/COMEXI.webp';
+import manuportLogo from './assets/img/loghi aggiunti/Manuport.webp';
+import metaxLogo from './assets/img/loghi aggiunti/METAX.webp';
+import noberascoLogo from './assets/img/loghi aggiunti/Noberasco-1.webp';
+import mtsSandeiLogo from './assets/img/loghi aggiunti/MTS-Sandei.webp';
+import aecomLogo from './assets/img/loghi aggiunti/Aecom.webp';
+
+// --- IMPORTAZIONE FOTO TESTIMONIANZE ---
+import andreaCattaneoPhoto from './assets/img/testimonianze/Andrea-Cattaneo-Manuport.png';
+import davideCammiPhoto from './assets/img/testimonianze/Davide-Cammi-Noberasco.png';
+import edoardoPaganiPhoto from './assets/img/testimonianze/Edoardo-Pagani-1.jpg';
+import faustoBrogliaPhoto from './assets/img/testimonianze/Broglia-Triumph.png';
+import paoloCalzaPhoto from './assets/img/testimonianze/paola_calza_MTS.jpg';
 
 // --- IMPORTAZIONE IMMAGINI CATALOGO ---
 import iaImage from './assets/img/IA-Service-First.png';
@@ -274,27 +288,34 @@ function App() {
     {
       text: "Azienda con un elevato grado di competenza / esperienza / conoscenza dell'universo Service a 360°. Elevatissima flessibilità del loro Software Gestionale e dei pacchetti a corredo che possono integrare. Ho avuto il piacere di lavorare con Gabriele, Francesco, Laura, Fabio e sono tutti estremamente focalizzati sulla ricerca della migliore soluzione alle nostre richieste; è sempre come lavorare con dei partner e non con dei semplici fornitori.",
       author: "Andrea Cattaneo",
-      role: "Responsabile Service Dept. | Manuport"
+      role: "Responsabile Service Dept. | Manuport",
+      photo: andreaCattaneoPhoto
     },
     {
       text: "Azienda seria ed innovativa, in grado di proporre soluzioni personalizzate e subito efficaci. Tutto lo staff è molto preparato e ben abituato a lavorare in velocità. Si è creata subito un'empatia particolare con tutte le figure coinvolte nel progetto e questo ha permesso di essere subito performanti! A distanza di due anni posso dire che Service First ci ha fatto fare un grande salto di qualità nella gestione della manutenzione.",
       author: "Davide Cammi",
-      role: "Direttore Industry | Noberasco"
+      role: "Direttore Industry | Noberasco",
+      photo: davideCammiPhoto,
+      photoPosition: "object-[center_20%]"
     },
     {
       text: "Partner affidabile ed abile nel comprendere le più diverse tipologie di mercato e grazie al loro know-how sono in grado di offrire soluzioni efficaci. Strutturato per le necessità delle grandi imprese ma ottimo anche nel seguire piccole realtà come la nostra.",
       author: "Edoardo Pagani",
-      role: "CEO Pagani Geotechnical Equipment"
+      role: "CEO Pagani Geotechnical Equipment",
+      photo: edoardoPaganiPhoto
     },
     {
       text: "Da quando ci siamo conosciuti ho subito avuto un feeling positivo che si conferma ogni volta in cui abbiamo la necessità di collaborare. In MILS ho trovato un'azienda giovane, dinamica, attenta alle necessità del cliente e con una altissima professionalità. Se devo segnalarti un aspetto su cui ho del rammarico è quello di non avervi incontrato prima 😄😄😄",
       author: "Fausto Broglia",
-      role: "Triumph"
+      role: "Triumph",
+      photo: faustoBrogliaPhoto
     },
     {
       text: "ServiceFirst ci ha fatto raggiungere tutti i target di investimento, migliorando la gestione di interventi, garanzie e reportistiche. Abbiamo completamente abbandonato il cartaceo e finalmente riusciamo a fatturare gli interventi nel mese corrente.",
       author: "Paolo Calza",
-      role: "MTS Sandei"
+      role: "MTS Sandei",
+      photo: paoloCalzaPhoto,
+      photoPosition: "object-top"
     }
   ];
 
@@ -312,7 +333,7 @@ function App() {
   };
   const currentTestimonials = getTestimonialsForCarousel();
 
-  const brandLogos = [cifaLogo, energreenLogo, geetitLogo, fiveLogo, zoomlionLogo];
+  const brandLogos = [cifaLogo, energreenLogo, geetitLogo, fiveLogo, zoomlionLogo, casaliniLogo, comexiLogo, manuportLogo, metaxLogo, noberascoLogo, mtsSandeiLogo, aecomLogo];
 
   return (
     <div className="min-h-screen flex flex-col bg-white text-sf-dark font-sans overflow-x-hidden selection:bg-sf-primary selection:text-white">
@@ -1079,9 +1100,17 @@ function App() {
                             </p>
                             
                             <div className="flex items-center gap-4 mt-auto pt-6 border-t border-gray-50">
-                               <div className="w-12 h-12 rounded-full bg-gradient-to-br from-sf-primary to-teal-600 flex items-center justify-center text-white font-bold text-xl shrink-0 shadow-md">
-                                  {item.author.charAt(0)}
-                               </div>
+                               {item.photo ? (
+                                  <img 
+                                     src={item.photo} 
+                                     alt={item.author} 
+                                     className={`w-12 h-12 rounded-full object-cover shrink-0 shadow-md ${item.photoPosition || ''}`}
+                                  />
+                               ) : (
+                                  <div className="w-12 h-12 rounded-full bg-gradient-to-br from-sf-primary to-teal-600 flex items-center justify-center text-white font-bold text-xl shrink-0 shadow-md">
+                                     {item.author.charAt(0)}
+                                  </div>
+                               )}
                                <div>
                                   <div className="font-bold text-sf-dark text-sm md:text-base">{item.author}</div>
                                   <div className="text-xs text-gray-500 font-medium uppercase tracking-wide">{item.role}</div>
