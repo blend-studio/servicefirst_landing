@@ -8,7 +8,7 @@ import {
   Phone, User, MessageSquare, Lock, ChevronLeft, ChevronRight,
   Video, Package, Languages, Wrench, Boxes, Pencil,
   Bot, FileUp, ScanLine, Wand2, CalendarDays, Truck, ClipboardList, LifeBuoy,
-  FileText, Bell, Paperclip // NUOVE ICONE AGGIUNTE
+  FileText, Bell, Paperclip, Quote // NUOVE ICONE AGGIUNTE
 } from 'lucide-react';
 
 // --- IMPORTAZIONE LOGHI ---
@@ -107,6 +107,8 @@ function App() {
   const [isMobile, setIsMobile] = useState(window.innerWidth < 768);
   const [isTablet, setIsTablet] = useState(window.innerWidth >= 768 && window.innerWidth < 1024);
   const [pricingPage, setPricingPage] = useState(0); // NUOVO STATE PER PRICING
+  const [testimonialPage, setTestimonialPage] = useState(0); // STATE PER TESTIMONIALS
+  const [testimonialDirection, setTestimonialDirection] = useState(0); // DIRECTION PER TESTIMONIALS
 
   useEffect(() => {
     const handleResize = () => {
@@ -136,6 +138,7 @@ function App() {
   }, [selectedFeature]);
   
   const ITEMS_PER_PAGE = isMobile ? 1 : (isTablet ? 4 : 6);
+  const TESTIMONIALS_PER_PAGE = isMobile ? 1 : (isTablet ? 2 : 3);
 
   const handleChange = (e) => {
     const value = e.target.type === 'checkbox' ? e.target.checked : e.target.value;
@@ -165,6 +168,17 @@ function App() {
       const maxPages = Math.ceil(features.length / ITEMS_PER_PAGE);
       if (nextPage < 0) return maxPages - 1;
       if (nextPage >= maxPages) return 0;
+      return nextPage;
+    });
+  };
+
+  const paginateTestimonials = (newDirection) => {
+    setTestimonialDirection(newDirection);
+    setTestimonialPage((prev) => {
+      const nextPage = prev + newDirection;
+      // Loop continuo
+      if (nextPage < 0) return testimonials.length - 1;
+      if (nextPage >= testimonials.length) return 0;
       return nextPage;
     });
   };
@@ -256,7 +270,47 @@ function App() {
     { id: 16, icon: <Paperclip size={32} />, title: "Allegati", desc: "Arricchisci i cataloghi con file di approfondimento.", details: "Senza restrizioni. Gli utenti possono scaricare manuali di istruzioni, schemi, video tutorial, certificazioni e altro ancora direttamente dalla scheda prodotto.", benefits: ["Download manuali", "Schede tecniche", "Certificazioni"] }
   ];
 
+  const testimonials = [
+    {
+      text: "Azienda con un elevato grado di competenza / esperienza / conoscenza dell'universo Service a 360°. Elevatissima flessibilità del loro Software Gestionale e dei pacchetti a corredo che possono integrare. Ho avuto il piacere di lavorare con Gabriele, Francesco, Laura, Fabio e sono tutti estremamente focalizzati sulla ricerca della migliore soluzione alle nostre richieste; è sempre come lavorare con dei partner e non con dei semplici fornitori.",
+      author: "Andrea Cattaneo",
+      role: "Responsabile Service Dept. | Manuport"
+    },
+    {
+      text: "Azienda seria ed innovativa, in grado di proporre soluzioni personalizzate e subito efficaci. Tutto lo staff è molto preparato e ben abituato a lavorare in velocità. Si è creata subito un'empatia particolare con tutte le figure coinvolte nel progetto e questo ha permesso di essere subito performanti! A distanza di due anni posso dire che Service First ci ha fatto fare un grande salto di qualità nella gestione della manutenzione.",
+      author: "Davide Cammi",
+      role: "Direttore Industry | Noberasco"
+    },
+    {
+      text: "Partner affidabile ed abile nel comprendere le più diverse tipologie di mercato e grazie al loro know-how sono in grado di offrire soluzioni efficaci. Strutturato per le necessità delle grandi imprese ma ottimo anche nel seguire piccole realtà come la nostra.",
+      author: "Edoardo Pagani",
+      role: "CEO Pagani Geotechnical Equipment"
+    },
+    {
+      text: "Da quando ci siamo conosciuti ho subito avuto un feeling positivo che si conferma ogni volta in cui abbiamo la necessità di collaborare. In MILS ho trovato un'azienda giovane, dinamica, attenta alle necessità del cliente e con una altissima professionalità. Se devo segnalarti un aspetto su cui ho del rammarico è quello di non avervi incontrato prima 😄😄😄",
+      author: "Fausto Broglia",
+      role: "Triumph"
+    },
+    {
+      text: "ServiceFirst ci ha fatto raggiungere tutti i target di investimento, migliorando la gestione di interventi, garanzie e reportistiche. Abbiamo completamente abbandonato il cartaceo e finalmente riusciamo a fatturare gli interventi nel mese corrente.",
+      author: "Paolo Calza",
+      role: "MTS Sandei"
+    }
+  ];
+
+
   const currentFeatures = features.slice(featurePage * ITEMS_PER_PAGE, (featurePage + 1) * ITEMS_PER_PAGE);
+  
+  // Genera array di testimonials per carousel continuo (wrapping)
+  const getTestimonialsForCarousel = () => {
+    const result = [];
+    for (let i = 0; i < TESTIMONIALS_PER_PAGE; i++) {
+      const index = (testimonialPage + i) % testimonials.length;
+      result.push(testimonials[index]);
+    }
+    return result;
+  };
+  const currentTestimonials = getTestimonialsForCarousel();
 
   const brandLogos = [cifaLogo, energreenLogo, geetitLogo, fiveLogo, zoomlionLogo];
 
@@ -958,7 +1012,91 @@ function App() {
           </motion.div>
         </div>
       </section>
+      
+      {/* SEZIONE TESTIMONIANZE / PARTNERSHIP (NUOVA) */}
+      <section className="py-12 md:py-24 bg-white">
+        <div className="max-w-7xl mx-auto px-4 md:px-6">
+          <motion.div 
+             initial={{ opacity: 0, y: 20 }}
+             whileInView={{ opacity: 1, y: 0 }}
+             viewport={{ once: true }}
+             className="text-center mb-10 md:mb-16"
+          >
+            <div className="inline-block bg-sf-primary text-white px-4 py-1 rounded-full text-xs md:text-sm font-bold mb-4 transform rotate-1">
+               UNA VERA PARTNERSHIP
+            </div>
+            <h2 className="text-2xl md:text-5xl font-extrabold text-sf-dark mb-4">
+              OLTRE IL SOFTWARE
+            </h2>
+          </motion.div>
 
+          <div className="relative px-10 md:px-14 lg:px-12">
+             {/* Pulsante Precedente */}
+             <div className="absolute top-1/2 left-1 md:left-2 lg:-left-8 transform -translate-y-1/2 z-10">
+                <button 
+                  onClick={() => paginateTestimonials(-1)}
+                  className="bg-white/90 backdrop-blur-sm p-2 md:p-3 rounded-full shadow-lg border border-gray-100 text-sf-dark hover:text-sf-primary hover:scale-110 transition"
+                >
+                  <ChevronLeft size={20} className="md:w-6 md:h-6" />
+                </button>
+             </div>
+
+             {/* Pulsante Successivo */}
+             <div className="absolute top-1/2 right-1 md:right-2 lg:-right-8 transform -translate-y-1/2 z-10">
+                <button 
+                  onClick={() => paginateTestimonials(1)}
+                  className="bg-white/90 backdrop-blur-sm p-2 md:p-3 rounded-full shadow-lg border border-gray-100 text-sf-dark hover:text-sf-primary hover:scale-110 transition"
+                >
+                  <ChevronRight size={20} className="md:w-6 md:h-6" />
+                </button>
+             </div>
+
+             <div className="overflow-hidden py-4 flex items-center justify-center">
+                <AnimatePresence initial={false} custom={testimonialDirection} mode="wait">
+                   <motion.div
+                      key={testimonialPage}
+                      custom={testimonialDirection}
+                      variants={slideVariants}
+                      initial="enter"
+                      animate="center"
+                      exit="exit"
+                      transition={{
+                         x: { type: "tween", ease: "easeInOut", duration: 0.25 },
+                         opacity: { duration: 0.2 }
+                      }}
+                      className={`${isMobile ? 'w-full flex justify-center' : 'grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8 w-full'}`}
+                   >
+                      {currentTestimonials.map((item, index) => (
+                         <motion.div 
+                            key={index}
+                            whileHover={{ y: -5 }}
+                            className={`bg-white border border-gray-100 p-6 md:p-8 rounded-2xl shadow-lg hover:shadow-xl transition-all duration-300 flex flex-col h-full min-h-[280px] md:min-h-[300px] ${isMobile ? 'w-[85%] mx-auto' : 'w-full'}`}
+                         >
+                            <Quote className="text-sf-primary/20 mb-6 w-10 h-10 fill-current" />
+                            
+                            <p className="text-gray-600 leading-relaxed mb-8 flex-grow italic text-sm md:text-base">
+                               "{item.text}"
+                            </p>
+                            
+                            <div className="flex items-center gap-4 mt-auto pt-6 border-t border-gray-50">
+                               <div className="w-12 h-12 rounded-full bg-gradient-to-br from-sf-primary to-teal-600 flex items-center justify-center text-white font-bold text-xl shrink-0 shadow-md">
+                                  {item.author.charAt(0)}
+                               </div>
+                               <div>
+                                  <div className="font-bold text-sf-dark text-sm md:text-base">{item.author}</div>
+                                  <div className="text-xs text-gray-500 font-medium uppercase tracking-wide">{item.role}</div>
+                               </div>
+                            </div>
+                         </motion.div>
+                      ))}
+                   </motion.div>
+                </AnimatePresence>
+             </div>
+
+
+          </div>
+        </div>
+      </section>
 
       {/* CTA / Form Section - MIGLIORATO (Campi, Animazioni, Stili) */}
       <section id="form" className="scroll-mt-32 md:scroll-mt-40 py-12 md:py-24 bg-sf-light relative">
